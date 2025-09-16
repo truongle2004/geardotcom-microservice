@@ -3,18 +3,24 @@ spring:
     name: sale-service
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/geardotcom
+    url: jdbc:postgresql://localhost:5434/geardotcom
     username: postgres
     password: root
   jpa:
+#    database-platform: org.hibernate.dialect.PostgreSQLDialect
     show-sql: true
     hibernate:
       ddl-auto: update
     open-in-view: false
     properties:
-      hibernate.jdbc.time_zone: UTC
+      hibernate:
+        jdbc:
+          time_zone: Asia/Ho_Chi_Minh
 
 eureka:
+  instance:
+    hostname: localhost
+    prefer-ip-address: true
   client:
     service-url:
       defaultZone: http://localhost:8761/eureka
