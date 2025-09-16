@@ -5,7 +5,7 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: "http://localhost:9000/realms/web-ecommerce"
+          issuer-uri: "http://localhost:9000/realms/geardotcom_realm"
   cloud:
     gateway:
       discovery:
@@ -39,3 +39,4 @@ eureka:
 server:
   port: 8222
   max-http-request-header-size: 16384
+  address: 127.0.0.1 # fix mshome.net error
