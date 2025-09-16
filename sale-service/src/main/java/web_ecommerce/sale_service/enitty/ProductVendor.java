@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 import web_ecommerce.core.db.BaseEntityNonId;
+import web_ecommerce.core.validation.annotation.ColumnComment;
 
 
 @NoArgsConstructor
@@ -11,7 +12,9 @@ import web_ecommerce.core.db.BaseEntityNonId;
 @Entity
 @Getter
 @Setter
-@Table(name = "product_vendors")
+@Table(name = "product_vendors", uniqueConstraints = {
+        @UniqueConstraint(columnNames = "name")
+})
 public class ProductVendor extends BaseEntityNonId {
     @Id
     @GeneratedValue(generator = "UUID")
@@ -22,9 +25,11 @@ public class ProductVendor extends BaseEntityNonId {
     @Column(name = "id", updatable = false, nullable = false)
     private String id;
 
+    @ColumnComment("Tên")
     @Column(name = "name", nullable = false)
     private String name;
 
+    @ColumnComment("Mã")
     @Column(name = "handle")
     private String handle;
 
