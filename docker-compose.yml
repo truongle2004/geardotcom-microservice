@@ -1,14 +1,33 @@
-version: '3.8'
-
 services:
-  postgres:
+
+  geardotcom:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: geardotcom
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: root
+      TZ: Asia/Ho_Chi_Minh   # <-- added here
+    volumes:
+      - geardotcom_postgres_data:/var/lib/postgresql/data
+    ports:
+      - 5434:5432
+    networks:
+      - ecommerce-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  keycloak_postgres:
     image: postgres:15
     environment:
       POSTGRES_DB: keycloak
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: root
+      TZ: Asia/Ho_Chi_Minh   # <-- added here
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - keycloak_postgres_data:/var/lib/postgresql/data
     ports:
       - 5433:5432
     networks:
@@ -27,14 +46,15 @@ services:
       KEYCLOAK_ADMIN_PASSWORD: admin
       KC_PROXY: none
       KC_DB: postgres
-      KC_DB_URL: jdbc:postgresql://postgres:5432/keycloak
+      KC_DB_URL: jdbc:postgresql://keycloak_postgres:5432/keycloak
       KC_DB_USERNAME: postgres
       KC_DB_PASSWORD: root
       KC_HTTP_PORT: 9000
+      TZ: Asia/Ho_Chi_Minh   # <-- optional (Keycloak will also run in local time)
     ports:
       - 9000:9000
     depends_on:
-      - postgres
+      - keycloak_postgres
     networks:
       - ecommerce-network
 
@@ -56,7 +76,8 @@ services:
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
 volumes:
-  postgres_data:
+  geardotcom_postgres_data:
+  keycloak_postgres_data:
 
 networks:
   ecommerce-network:
