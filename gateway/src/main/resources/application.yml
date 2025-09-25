@@ -1,11 +1,13 @@
 spring:
   application:
     name: gateway-service
+
   security:
     oauth2:
       resourceserver:
         jwt:
           issuer-uri: "http://localhost:9000/realms/geardotcom_realm"
+
   cloud:
     gateway:
       discovery:
@@ -40,3 +42,7 @@ server:
   port: 8222
   max-http-request-header-size: 16384
   address: 127.0.0.1 # fix mshome.net error
+
+logging:
+  level:
+    org.springframework.security: DEBUG

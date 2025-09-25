@@ -33,6 +33,7 @@
         <module name="common-service" />
         <module name="notifcation-service" />
         <module name="sale-service" />
+        <module name="notification-service" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
@@ -49,6 +50,7 @@
       <module name="discovery-service" options="-parameters" />
       <module name="gateway" options="-parameters" />
       <module name="notifcation-service" options="-parameters" />
+      <module name="notification-service" options="-parameters" />
       <module name="payment-service" options="-parameters" />
       <module name="sale-service" options="-parameters" />
       <module name="user-service" options="-parameters" />
