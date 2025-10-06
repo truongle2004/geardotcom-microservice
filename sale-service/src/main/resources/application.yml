@@ -33,5 +33,5 @@ server:
 #  port: 6379
 #
 
-file_upload-dir: /home/lesytruong/projects/images
+file_upload-dir: /home/truongls1/truongle_workspace/E_COMMERCE_PROJECT/images
 file_upload-url: http://localhost:8222/api/v1/sale/products

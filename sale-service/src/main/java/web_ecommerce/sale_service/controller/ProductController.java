@@ -86,7 +86,7 @@ public class ProductController extends BaseController {
     @GetMapping(value = V1 + root + "/images/{filename:.+}")
     public ResponseEntity<Resource> getImage(@PathVariable String filename) {
         try {
-            Path imagePath = Paths.get("C:/MY_PROJECT/geardotcom/images").resolve(filename).normalize();
+            Path imagePath = Paths.get("/home/truongls1/truongle_workspace/E_COMMERCE_PROJECT/images").resolve(filename).normalize();
             Resource resource = new UrlResource(imagePath.toUri());
 
             if (!resource.exists()) {
