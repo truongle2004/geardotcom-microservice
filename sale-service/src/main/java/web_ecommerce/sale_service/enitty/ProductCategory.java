@@ -5,6 +5,7 @@ import lombok.*;
 import jakarta.persistence.*;
 
 import org.hibernate.annotations.GenericGenerator;
+import web_ecommerce.core.db.BaseEntityNonId;
 import web_ecommerce.core.validation.annotation.ColumnComment;
 
 @Data
@@ -18,7 +19,7 @@ import web_ecommerce.core.validation.annotation.ColumnComment;
                 @UniqueConstraint(columnNames = {"handle"})
         }
 )
-public class ProductCategory {
+public class ProductCategory extends BaseEntityNonId {
     @Id
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(
