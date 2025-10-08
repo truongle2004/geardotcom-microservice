@@ -50,9 +50,12 @@ services:
       KC_DB_USERNAME: postgres
       KC_DB_PASSWORD: root
       KC_HTTP_PORT: 9000
-      TZ: Asia/Ho_Chi_Minh   # <-- optional (Keycloak will also run in local time)
+      TZ: Asia/Ho_Chi_Minh
     ports:
       - 9000:9000
+    volumes:
+      - ./identity/themes/geardotcom/theme:/opt/keycloak/themes
+      - ./identity/realm-export.json:/opt/keycloak/data/import/realm-export.json
     depends_on:
       - geardotcom
     networks:

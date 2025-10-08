@@ -1,52 +1,52 @@
 <#import "template.ftl" as layout>
 <#import "components/link/primary.ftl" as linkPrimary>
-
 <@layout.registrationLayout displayInfo=social.displayInfo; section>
-    <#if section = "title">
-        ${msg("loginTitle",(realm.displayName!''))}
-    <#elseif section = "header">
-        <link href="https://fonts.googleapis.com/css?family=Muli" rel="stylesheet"/>
-        <script>
-            function togglePassword() {
-                var x = document.getElementById("password");
-                var v = document.getElementById("vi");
-                if (x.type === "password") {
-                    x.type = "text";
-                    v.src = "${url.resourcesPath}/img/eye.png";
-                } else {
-                    x.type = "password";
-                    v.src = "${url.resourcesPath}/img/eye-off.png";
-                }
+<#if section = "title">
+${msg("loginTitle",(realm.displayName!''))}
+<#elseif section = "header">
+    <link href="https://fonts.googleapis.com/css?family=Muli" rel="stylesheet"/>
+    <script>
+        function togglePassword() {
+            var x = document.getElementById("password");
+            var v = document.getElementById("vi");
+            if (x.type === "password") {
+                x.type = "text";
+                v.src = "${url.resourcesPath}/img/eye.png";
+            } else {
+                x.type = "password";
+                v.src = "${url.resourcesPath}/img/eye-off.png";
             }
-        </script>
-            <div class="logoyas">
-           <img class="logo" src="${url.resourcesPath}/img/yaslogo.png" alt="yas">
-        </div>
-    <#elseif section = "form">
-    
-        <div class="box-container">
-            <div>
-                <p class="application-name">Welcome to Yas store</p>
-            </div>
-        <#if realm.password>
-            <div>
-               <form id="kc-form-login" class="form" onsubmit="return true;" action="${url.loginAction}" method="post">
-                    <input id="username" class="login-field" placeholder="${msg("username")}" type="text" name="username" tabindex="1">
-                    <div>
-                        <label class="visibility" id="v" onclick="togglePassword()"><img id="vi" src="${url.resourcesPath}/img/eye-off.png"></label>
-                    </div>
-                <input id="password" class="login-field" placeholder="${msg("password")}" type="password" name="password" tabindex="2">
-                <input class="submit" type="submit" value="${msg("doLogIn")}" tabindex="3">
-                </form>
-            </div>
-            <div class="register">
-               <@linkPrimary.kw href=url.registrationUrl>
-                    <input class="register" type="button" value="${msg("doRegister")}" tabindex="3" href=url.registrationUrl>
-                </@linkPrimary.kw>
-            </div>
-        </#if>
+        }
+    </script>
+<#elseif section = "form">
+<div class="box-container">
+    <div>
+        <p class="application-name">Welcome to Geardotcom store</p>
+    </div>
+    <#if realm.password>
         <div>
-            <p class="copyright">&copy; copyright - yas.nashtech-garage ${.now?string('yyyy')}</p>
+            <form id="kc-form-login" class="form" onsubmit="return true;" action="${url.loginAction}" method="post">
+                <div class="input-group">
+                    <input id="username" class="login-field" placeholder="${msg("username")}" type="text" name="username"
+                           tabindex="1">
+                </div>
+                <div class="input-group">
+                    <input id="password" class="login-field" placeholder="${msg("password")}" type="password"
+                           name="password" tabindex="2">
+                    <label class="visibility" id="v" onclick="togglePassword()">
+                        <img id="vi" src="${url.resourcesPath}/img/eye-off.png">
+                    </label>
+                </div>
+                <input class="submit" type="submit" value="${msg("doLogIn")}" tabindex="3">
+            </form>
+        </div>
+        <div>
+            <@linkPrimary.kw href=url.registrationUrl>
+                <button class="register" type="button" tabindex="4">
+                    ${msg("doRegister")}
+                </button>
+            </@linkPrimary.kw>
         </div>
     </#if>
-</@layout.registrationLayout>
+    </#if>
+    </@layout.registrationLayout>
