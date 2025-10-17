@@ -3,6 +3,7 @@ package web_ecommerce.sale_service.controller;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.data.domain.Page;
@@ -32,6 +33,9 @@ import java.util.List;
 public class ProductController extends BaseController {
     private static final String root = "/sale/products";
     private final ProductService productService;
+    
+    @Value("${file_upload-dir}")
+    private String imageUploadDir;
 
     public ProductController(ProductService productService) {
         this.productService = productService;
@@ -86,7 +90,7 @@ public class ProductController extends BaseController {
     @GetMapping(value = V1 + root + "/images/{filename:.+}")
     public ResponseEntity<Resource> getImage(@PathVariable String filename) {
         try {
-            Path imagePath = Paths.get("/home/truongls1/truongle_workspace/E_COMMERCE_PROJECT/images").resolve(filename).normalize();
+            Path imagePath = Paths.get(imageUploadDir).resolve(filename).normalize();
             Resource resource = new UrlResource(imagePath.toUri());
 
             if (!resource.exists()) {

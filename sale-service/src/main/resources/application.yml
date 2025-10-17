@@ -3,11 +3,11 @@ spring:
     name: sale-service
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5434/geardotcom
+    url: jdbc:postgresql://localhost:5434/geardotcom?user=postgres&password=root&options=-c%20TimeZone=Asia/Ho_Chi_Minh
     username: postgres
     password: root
   jpa:
-#    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
     show-sql: true
     hibernate:
       ddl-auto: update
@@ -33,5 +33,5 @@ server:
 #  port: 6379
 #
 
-file_upload-dir: /home/truongls1/truongle_workspace/E_COMMERCE_PROJECT/images
+file_upload-dir: C:\truongle_workspace\geardotcom-project\images
 file_upload-url: http://localhost:8222/api/v1/sale/products
