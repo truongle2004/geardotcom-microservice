@@ -120,20 +120,22 @@ public class WishlistServiceImpl implements WishlistService {
     public Response<?> addProductToWishlist(AddToWishlistDto addToWishlistDto, String userId) {
         // Verify wishlist exists
         try {
-
-            String newWishlistId = "";
+            String wishlistId;
             Optional<Wishlist> wishlist = wishlistRepository.findByUserId(userId);
             if (wishlist.isEmpty()) {
                 CreateWishlistDto createWishlistDto = new CreateWishlistDto();
                 createWishlistDto.setUserId(userId);
-                newWishlistId = createWishlist(createWishlistDto).getId();
-            } else if (wishlistItemRepository.existsByWishlistIdAndProductId(
-                    wishlist.get().getId(), addToWishlistDto.getProductId())) {
-                return new Response<>().withDataAndStatus(ResponseMessage.WISHLIST_ITEM_ALREADY_EXISTS.getMessage(), HttpStatus.CONFLICT);
+                wishlistId = createWishlist(createWishlistDto).getId();
+            } else {
+                wishlistId = wishlist.get().getId();
+                if (wishlistItemRepository.existsByWishlistIdAndProductId(
+                        wishlistId, addToWishlistDto.getProductId())) {
+                    return new Response<>().withDataAndStatus(ResponseMessage.WISHLIST_ITEM_ALREADY_EXISTS.getMessage(), HttpStatus.CONFLICT);
+                }
             }
 
             WishlistItem wishlistItem = new WishlistItem();
-            wishlistItem.setWishlistId(newWishlistId);
+            wishlistItem.setWishlistId(wishlistId);
             wishlistItem.setProductId(addToWishlistDto.getProductId());
             wishlistItemRepository.save(wishlistItem);
             return new Response<>().withDataAndStatus(ResponseMessage.WISHLIST_ITEM_ADDED_SUCCESS.getMessage(), HttpStatus.CREATED);

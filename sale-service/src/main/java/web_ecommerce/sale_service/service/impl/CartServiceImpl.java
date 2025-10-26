@@ -58,30 +58,27 @@ public class CartServiceImpl implements CartService {
 
         String cartId = cartRepository.getByUserId(userId);
 
-        CartItem isExist = cartItemRepository.findByCartIdAndProductId(cartId, newItem.getProductId());
-        if(isExist != null) {
-            return new Response<String>().withDataAndStatus(ResponseMessage.CART_ITEM_ALREADY_EXISTS.getMessage(), HttpStatus.CONFLICT);
-        }
-
+        // If cart doesn't exist, create it
         if (StringUtils.isNotNullOrEmpty(cartId)) {
             Cart cart = new Cart();
             cart.setUserId(userId);
-            createNewCart(cart);
-
-            CartItem cartItem = new CartItem();
-            cartItem.setCartId(userId);
-            cartItem.setProductId(newItem.getProductId());
-            cartItem.setQuantity(newItem.getQuantity());
-            cartItemRepository.save(cartItem);
+            Cart savedCart = cartRepository.save(cart);
+            cartId = savedCart.getId();
         } else {
-            List<CartItem> cartItems = cartItemRepository.getAllByCartId(cartId);
-            for (CartItem cartItem : cartItems) {
-                if (Objects.equals(cartItem.getProductId(), newItem.getProductId())) {
-                    return new Response<String>().withDataAndStatus(ResponseMessage.CART_ITEM_ALREADY_EXISTS.getMessage(), HttpStatus.CONFLICT);
-                }
+            // Check if item already exists in cart
+            CartItem isExist = cartItemRepository.findByCartIdAndProductId(cartId, newItem.getProductId());
+            if(isExist != null) {
+                return new Response<String>().withDataAndStatus(ResponseMessage.CART_ITEM_ALREADY_EXISTS.getMessage(), HttpStatus.CONFLICT);
             }
-            cartItemRepository.save(new CartItem(newItem.getProductId(), cartId, newItem.getQuantity()));
         }
+
+        // Add item to cart
+        CartItem cartItem = new CartItem();
+        cartItem.setCartId(cartId);
+        cartItem.setProductId(newItem.getProductId());
+        cartItem.setQuantity(newItem.getQuantity());
+        cartItemRepository.save(cartItem);
+        
         return new Response<String>().withDataAndStatus("Đã thêm sản phẩm vào giỏ hàng", HttpStatus.OK);
     }
 

@@ -21,6 +21,7 @@ import web_ecommerce.sale_service.dto.CategoryDTO;
 import web_ecommerce.sale_service.dto.ProductDTO;
 import web_ecommerce.sale_service.dto.VendorDTO;
 import web_ecommerce.sale_service.service.ProductService;
+import web_ecommerce.sale_service.service.VietnameseSearchService;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -33,12 +34,14 @@ import java.util.List;
 public class ProductController extends BaseController {
     private static final String root = "/sale/products";
     private final ProductService productService;
+    private final VietnameseSearchService vietnameseSearchService;
     
     @Value("${file_upload-dir}")
     private String imageUploadDir;
 
-    public ProductController(ProductService productService) {
+    public ProductController(ProductService productService, VietnameseSearchService vietnameseSearchService) {
         this.productService = productService;
+        this.vietnameseSearchService = vietnameseSearchService;
     }
 
     @ApiOperation(value = "API get list product")
@@ -55,6 +58,23 @@ public class ProductController extends BaseController {
             @RequestParam(required = false) BigDecimal max
     ) {
         return productService.getListProductByCategory(pageable, category, vendor, min, max);
+    }
+
+    @ApiOperation(value = "API search products (Hibernate Search)")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "Success"),
+            @ApiResponse(code = 400, message = "Bad request"),
+            @ApiResponse(code = 500, message = "Internal server error")}
+    )
+    @GetMapping(value = V1 + root + "/search")
+    public Response<Page<ProductDTO>> searchProducts(
+            Pageable pageable,
+            @RequestParam(required = false, name = "q") String query,
+            @RequestParam(defaultValue = "all") String category,
+            @RequestParam(defaultValue = "") String vendor,
+            @RequestParam(required = false, name = "min") BigDecimal min,
+            @RequestParam(required = false, name = "max") BigDecimal max
+    ) {
+        return productService.searchProducts(pageable, query, category, vendor, min, max);
     }
 
     @ApiOperation(value = "API get product detail")
@@ -114,5 +134,79 @@ public class ProductController extends BaseController {
     @GetMapping(value = V1 + root + "/vendors")
     public Response<List<VendorDTO>> getVendor() {
         return productService.getAllVendor();
+    }
+
+    @ApiOperation(value = "API get best sellers")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "Success"),
+            @ApiResponse(code = 500, message = "Internal server error")}
+    )
+    @GetMapping(value = V1 + root + "/best-sellers")
+    public Response<Page<ProductDTO>> getBestSellers(Pageable pageable) {
+        return productService.getBestSellers(pageable);
+    }
+
+    @ApiOperation(value = "API get featured products")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "Success"),
+            @ApiResponse(code = 500, message = "Internal server error")}
+    )
+    @GetMapping(value = V1 + root + "/featured")
+    public Response<Page<ProductDTO>> getFeaturedProducts(Pageable pageable) {
+        return productService.getFeaturedProducts(pageable);
+    }
+
+    @ApiOperation(value = "API get top rated products")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "Success"),
+            @ApiResponse(code = 500, message = "Internal server error")}
+    )
+    @GetMapping(value = V1 + root + "/top-rated")
+    public Response<Page<ProductDTO>> getTopRatedProducts(Pageable pageable) {
+        return productService.getTopRatedProducts(pageable);
+    }
+
+    @ApiOperation(value = "API search products with Vietnamese text support")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "Success"),
+            @ApiResponse(code = 400, message = "Bad request"),
+            @ApiResponse(code = 500, message = "Internal server error")}
+    )
+    @GetMapping(value = V1 + root + "/search-vietnamese")
+    public Response<Page<ProductDTO>> searchProductsVietnamese(
+            Pageable pageable,
+            @RequestParam(required = false, name = "q") String query,
+            @RequestParam(defaultValue = "all") String category,
+            @RequestParam(defaultValue = "") String vendor,
+            @RequestParam(required = false, name = "min") BigDecimal min,
+            @RequestParam(required = false, name = "max") BigDecimal max
+    ) {
+        return vietnameseSearchService.searchProductsVietnamese(pageable, query, category, vendor, min, max);
+    }
+
+    @ApiOperation(value = "API search products with Vietnamese text normalization")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "Success"),
+            @ApiResponse(code = 400, message = "Bad request"),
+            @ApiResponse(code = 500, message = "Internal server error")}
+    )
+    @GetMapping(value = V1 + root + "/search-normalized")
+    public Response<Page<ProductDTO>> searchProductsNormalized(
+            Pageable pageable,
+            @RequestParam(required = false, name = "q") String query,
+            @RequestParam(defaultValue = "all") String category,
+            @RequestParam(defaultValue = "") String vendor,
+            @RequestParam(required = false, name = "min") BigDecimal min,
+            @RequestParam(required = false, name = "max") BigDecimal max
+    ) {
+        return vietnameseSearchService.searchProductsNormalized(pageable, query, category, vendor, min, max);
+    }
+
+    @ApiOperation(value = "API get search suggestions for autocomplete")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "Success"),
+            @ApiResponse(code = 400, message = "Bad request"),
+            @ApiResponse(code = 500, message = "Internal server error")}
+    )
+    @GetMapping(value = V1 + root + "/search-suggestions")
+    public Response<List<String>> getSearchSuggestions(
+            @RequestParam(required = false, name = "q") String query,
+            @RequestParam(defaultValue = "10") int limit
+    ) {
+        return vietnameseSearchService.getSearchSuggestions(query, limit);
     }
 }

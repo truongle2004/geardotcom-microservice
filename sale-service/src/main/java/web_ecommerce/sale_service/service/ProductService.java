@@ -3,7 +3,6 @@ package web_ecommerce.sale_service.service;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.ResponseEntity;
 import web_ecommerce.core.dto.response.Response;
 import web_ecommerce.sale_service.dto.CategoryDTO;
 import web_ecommerce.sale_service.dto.ProductDTO;
@@ -18,4 +17,9 @@ public interface ProductService {
     Response<ProductDTO> getById(String id);
     Response<List<CategoryDTO>> getAllProductCategory();
     Response<List<VendorDTO>> getAllVendor();
+    Response<Page<ProductDTO>> getBestSellers(Pageable pageable);
+    Response<Page<ProductDTO>> getFeaturedProducts(Pageable pageable);
+    Response<Page<ProductDTO>> getTopRatedProducts(Pageable pageable);
+
+    Response<Page<ProductDTO>> searchProducts(Pageable pageable, String q, String category, String vendor, BigDecimal minPrice, BigDecimal maxPrice);
  }

@@ -16,6 +16,21 @@ spring:
       hibernate:
         jdbc:
           time_zone: Asia/Ho_Chi_Minh
+        search:
+          backend:
+            type: lucene
+            directory:
+              root: ${java.io.tmpdir}/geardotcom/lucene-indexes
+            lucene:
+              analysis:
+                configurer: web_ecommerce.sale_service.config.VietnameseSearchConfig
+              indexing:
+                queue_count: 4
+                queue_size: 1000
+                max_batch_size: 100
+              query:
+                shard:
+                  count: 1
 
 eureka:
   instance:
