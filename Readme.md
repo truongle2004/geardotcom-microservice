@@ -1,4 +1,4 @@
-## 🧭 Summary: JVM Timezone Configuration
+## 🧭 Summary: JVM Timezone Configuration`````
 
 | Environment | How to Set | Example / Notes |
 |--------------|-------------|------------------|
@@ -15,3 +15,11 @@
 Always start your Java or Spring Boot app with:
 ```bash
 java -Duser.timezone=Asia/Ho_Chi_Minh -jar app.jar
+```
+
+---
+
+✅ **Recommended for intellij IDE:**  
+Set this config in configuration with VM option:
+```bash
+-Duser.timezone=Asia/Ho_Chi_Minh
