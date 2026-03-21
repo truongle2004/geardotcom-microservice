@@ -5,9 +5,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.search.mapper.pojo.mapping.definition.annotation.FullTextField;
+//import org.hibernate.search.mapper.pojo.mapping.definition.annotation.FullTextField;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.GenericField;
-import org.hibernate.search.mapper.pojo.mapping.definition.annotation.Indexed;
+//import org.hibernate.search.mapper.pojo.mapping.definition.annotation.Indexed;
 import web_ecommerce.core.db.BaseEntityNonId;
 import web_ecommerce.core.validation.annotation.ColumnComment;
 
@@ -20,7 +20,7 @@ import java.math.BigDecimal;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Indexed
+//@Indexed
 public class Product extends BaseEntityNonId {
 
     @Id
@@ -38,18 +38,18 @@ public class Product extends BaseEntityNonId {
 
     @ColumnComment("Gía sản phẩm")
     @Column(nullable = false)
-    @GenericField(sortable = org.hibernate.search.engine.backend.types.Sortable.YES)
+//    @GenericField(sortable = org.hibernate.search.engine.backend.types.Sortable.YES)
     private BigDecimal price;
 
     @ColumnComment("Mô tả")
     @Column(columnDefinition = "TEXT")
-    @FullTextField(analyzer = "vietnamese")
+//    @FullTextField(analyzer = "vietnamese")
     private String description;
 
     @ColumnComment("tiêu đề")
     @Column(nullable = false, length = 500)
-    @FullTextField(analyzer = "vietnamese")
-    @GenericField(name = "title_sort", sortable = org.hibernate.search.engine.backend.types.Sortable.YES)
+//    @FullTextField(analyzer = "vietnamese")
+//    @GenericField(name = "title_sort", sortable = org.hibernate.search.engine.backend.types.Sortable.YES)
     private String title;
 
     @ColumnComment("id kho")
@@ -79,12 +79,12 @@ public class Product extends BaseEntityNonId {
 
     @ColumnComment("Tổng số lượt đánh giá sản phẩm")
     @Column(name = "review_count")
-    @GenericField(sortable = org.hibernate.search.engine.backend.types.Sortable.YES)
+//    @GenericField(sortable = org.hibernate.search.engine.backend.types.Sortable.YES)
     private Integer reviewCount = 0;
 
     @ColumnComment("Các thẻ liên quan đến sản phẩm (tags), cách nhau bằng dấu phẩy")
     @Column(columnDefinition = "TEXT")
-    @FullTextField(analyzer = "vietnamese")
+//    @FullTextField(analyzer = "vietnamese")
     private String tags;
 
     @ColumnComment("Số lượng đã bán")
