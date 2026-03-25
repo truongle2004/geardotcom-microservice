@@ -1,8 +1,8 @@
 package web_ecommerce.sale_service.controller;
 
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -26,12 +26,12 @@ public class OrderController extends BaseController {
     private final static String root = "/sale/orders";
     private final OrderService orderService;
 
-    @ApiOperation(value = "Create order")
+    @Operation(summary = "Create order", description = "Create a new order")
     @ApiResponses(value = {
-            @ApiResponse(code = 201, message = "Created"),
-            @ApiResponse(code = 400, message = "Bad request"),
-            @ApiResponse(code = 404, message = "Not found"),
-            @ApiResponse(code = 500, message = "Internal server error")
+            @ApiResponse(responseCode = "201", description = "Created"),
+            @ApiResponse(responseCode = "400", description = "Bad request"),
+            @ApiResponse(responseCode = "404", description = "Not found"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @PostMapping(V1 + root + "/create-order")
     public Response<?> createOrder(HttpServletRequest request, @RequestBody OrderRequestDto orderRequestDto) {
@@ -39,11 +39,11 @@ public class OrderController extends BaseController {
         return orderService.createOrder(orderRequestDto, userId);
     }
 
-    @ApiOperation(value = "Get order history")
+    @Operation(summary = "Get order history")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Success"),
-            @ApiResponse(code = 404, message = "Not found"),
-            @ApiResponse(code = 500, message = "Internal server error")
+            @ApiResponse(responseCode = "200", description = "Success"),
+            @ApiResponse(responseCode = "404", description = "Not found"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @GetMapping(V1 + root + "/history")
     public Response<?> getOrderHistory(
@@ -57,11 +57,11 @@ public class OrderController extends BaseController {
         return new Response<Page<OrderDto>>().withDataAndStatus(orders, HttpStatus.OK);
     }
 
-    @ApiOperation(value = "Get order by ID")
+    @Operation(summary = "Get order by ID")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Success"),
-            @ApiResponse(code = 404, message = "Not found"),
-            @ApiResponse(code = 500, message = "Internal server error")
+            @ApiResponse(responseCode = "200", description = "Success"),
+            @ApiResponse(responseCode = "404", description = "Not found"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @GetMapping(V1 + root + "/{orderId}")
     public Response<?> getOrderById(HttpServletRequest request, @PathVariable String orderId) {
@@ -74,12 +74,12 @@ public class OrderController extends BaseController {
                 .orElse(new Response<OrderDto>().withDataAndStatus(null, HttpStatus.NOT_FOUND));
     }
 
-    @ApiOperation(value = "Cancel order")
+    @Operation(summary = "Cancel order")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Success"),
-            @ApiResponse(code = 403, message = "Forbidden"),
-            @ApiResponse(code = 404, message = "Not found"),
-            @ApiResponse(code = 500, message = "Internal server error")
+            @ApiResponse(responseCode = "200", description = "Success"),
+            @ApiResponse(responseCode = "403", description = "Forbidden"),
+            @ApiResponse(responseCode = "404", description = "Not found"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @PatchMapping(V1 + root + "/{orderId}/cancel")
     public Response<?> cancelOrder(HttpServletRequest request, @PathVariable String orderId) {
@@ -91,11 +91,11 @@ public class OrderController extends BaseController {
         return new Response<Void>().withDataAndStatus(null, HttpStatus.OK);
     }
 
-    @ApiOperation(value = "Get orders by status")
+    @Operation(summary = "Get orders by status")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Success"),
-            @ApiResponse(code = 404, message = "Not found"),
-            @ApiResponse(code = 500, message = "Internal server error")
+            @ApiResponse(responseCode = "200", description = "Success"),
+            @ApiResponse(responseCode = "404", description = "Not found"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @GetMapping(V1 + root + "/status/{status}")
     public Response<?> getOrdersByStatus(

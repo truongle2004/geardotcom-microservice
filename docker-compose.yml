@@ -1,11 +1,10 @@
 services:
-  geardotcom:
+  database:
     image: postgres:15
     environment:
-      POSTGRES_DB: geardotcom
+      POSTGRES_DB: database
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: root
-      TZ: Asia/Ho_Chi_Minh # <-- added here
     volumes:
       - geardotcom_postgres_data:/var/lib/postgresql/data
     ports:
@@ -17,6 +16,35 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+
+  discovery-service:
+    build: ./discovery-service
+    container_name: discovery-service
+    ports:
+      - "8761:8761"
+    networks:
+      - ecommerce-network
+
+  gateway-service:
+    build: ./gateway
+    container_name: gateway-service
+    depends_on:
+      - discovery-service
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-service:8761/eureka
+    ports:
+      - "8222:8222"
+    networks:
+      - ecommerce-network
+
+
+  sale-service:
+    build: ./sale-service
+    container_name: sale-service
+    ports:
+      - "8081:8081"
+    networks:
+      - ecommerce-network
 
   #  keycloak_postgres:
   #    image: postgres:15
@@ -49,14 +77,13 @@ services:
       KC_DB_USERNAME: postgres
       KC_DB_PASSWORD: root
       KC_HTTP_PORT: 9000
-      TZ: Asia/Ho_Chi_Minh
     ports:
       - 9000:9000
     volumes:
       - ./identity/themes/geardotcom/theme:/opt/keycloak/themes
       - ./identity/realm-export.json:/opt/keycloak/data/import/realm-export.json
     depends_on:
-      - geardotcom
+      - database
     networks:
       - ecommerce-network
 

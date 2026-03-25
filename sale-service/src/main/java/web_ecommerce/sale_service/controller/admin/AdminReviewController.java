@@ -1,9 +1,9 @@
 package web_ecommerce.sale_service.controller.admin;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -19,15 +19,15 @@ import web_ecommerce.sale_service.service.ProductReviewService;
 @RestController
 @RequestMapping("/admin")
 @RequiredArgsConstructor
-@Api(tags = "Admin - Review Management")
+@Tag(name = "Admin - Review Management")
 public class AdminReviewController extends BaseController {
     private static final String root = "/reviews";
     private final ProductReviewService reviewService;
 
-    @ApiOperation(value = "Get pending reviews (for moderation)")
+    @Operation(summary = "Get pending reviews (for moderation)")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Success"),
-            @ApiResponse(code = 500, message = "Internal server error")
+            @ApiResponse(responseCode = "200", description = "Success"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @GetMapping(V1 + root + "/pending")
     public Response<Page<ProductReviewDto>> getPendingReviews(
@@ -36,11 +36,11 @@ public class AdminReviewController extends BaseController {
         return new Response<Page<ProductReviewDto>>().withDataAndStatus(reviews, HttpStatus.OK);
     }
 
-    @ApiOperation(value = "Approve review")
+    @Operation(summary = "Approve review")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Success"),
-            @ApiResponse(code = 404, message = "Not found"),
-            @ApiResponse(code = 500, message = "Internal server error")
+            @ApiResponse(responseCode = "200", description = "Success"),
+            @ApiResponse(responseCode = "404", description = "Not found"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @PatchMapping(V1 + root + "/{id}/approve")
     public Response<Void> approveReview(@PathVariable String id) {
@@ -48,11 +48,11 @@ public class AdminReviewController extends BaseController {
         return new Response<Void>().withDataAndStatus(null, HttpStatus.OK);
     }
 
-    @ApiOperation(value = "Reject review")
+    @Operation(summary = "Reject review")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Success"),
-            @ApiResponse(code = 404, message = "Not found"),
-            @ApiResponse(code = 500, message = "Internal server error")
+            @ApiResponse(responseCode = "200", description = "Success"),
+            @ApiResponse(responseCode = "404", description = "Not found"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @PatchMapping(V1 + root + "/{id}/reject")
     public Response<Void> rejectReview(@PathVariable String id) {
@@ -60,11 +60,11 @@ public class AdminReviewController extends BaseController {
         return new Response<Void>().withDataAndStatus(null, HttpStatus.OK);
     }
 
-    @ApiOperation(value = "Mark review as verified purchase")
+    @Operation(summary = "Mark review as verified purchase")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Success"),
-            @ApiResponse(code = 404, message = "Not found"),
-            @ApiResponse(code = 500, message = "Internal server error")
+            @ApiResponse(responseCode = "200", description = "Success"),
+            @ApiResponse(responseCode = "404", description = "Not found"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @PatchMapping(V1 + root + "/{id}/verify")
     public Response<Void> verifyReview(@PathVariable String id) {
@@ -72,10 +72,10 @@ public class AdminReviewController extends BaseController {
         return new Response<Void>().withDataAndStatus(null, HttpStatus.OK);
     }
 
-    @ApiOperation(value = "Get all reviews for a product")
+    @Operation(summary = "Get all reviews for a product")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Success"),
-            @ApiResponse(code = 500, message = "Internal server error")
+            @ApiResponse(responseCode = "200", description = "Success"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @GetMapping(V1 + root + "/product/{productId}")
     public Response<Page<ProductReviewDto>> getReviewsByProductId(
@@ -85,4 +85,5 @@ public class AdminReviewController extends BaseController {
         return new Response<Page<ProductReviewDto>>().withDataAndStatus(reviews, HttpStatus.OK);
     }
 }
+
 

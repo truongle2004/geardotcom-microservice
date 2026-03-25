@@ -1,8 +1,8 @@
 package web_ecommerce.sale_service.controller;
 
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -29,11 +29,11 @@ public class CartController extends BaseController {
     }
 
 
-    @ApiOperation(value = "API add product to cart")
-    @ApiResponses(value = {@ApiResponse(code = 200, message = "Success"),
-            @ApiResponse(code = 400, message = "Bad request"),
-            @ApiResponse(code = 404, message = "Not found"),
-            @ApiResponse(code = 500, message = "Internal server error")}
+    @Operation(summary = "API add product to cart")
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Success"),
+            @ApiResponse(responseCode = "400", description = "Bad request"),
+            @ApiResponse(responseCode = "404", description = "Not found"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")}
     )
     @PostMapping(value = V1 + root)
     public Response<?> addProductToCart(HttpServletRequest httpServletRequest,
@@ -44,11 +44,11 @@ public class CartController extends BaseController {
         return cartService.addItemToCart(userId, cartItemDTO);
     }
 
-    @ApiOperation(value = "API remove product from cart")
-    @ApiResponses(value = {@ApiResponse(code = 200, message = "Success"),
-            @ApiResponse(code = 400, message = "Bad request"),
-            @ApiResponse(code = 404, message = "Not found"),
-            @ApiResponse(code = 500, message = "Internal server error")}
+    @Operation(summary = "API remove product from cart")
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Success"),
+            @ApiResponse(responseCode = "400", description = "Bad request"),
+            @ApiResponse(responseCode = "404", description = "Not found"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")}
     )
     @DeleteMapping(value = V1 + root)
     public Response<String> removeProductFromCart(HttpServletRequest httpServletRequest, @RequestParam List<String> ids) {
@@ -60,11 +60,11 @@ public class CartController extends BaseController {
     }
 
 
-    @ApiOperation(value = "API get all cart items")
-    @ApiResponses(value = {@ApiResponse(code = 200, message = "Success"),
-            @ApiResponse(code = 400, message = "Bad request"),
-            @ApiResponse(code = 404, message = "Not found"),
-            @ApiResponse(code = 500, message = "Internal server error")}
+    @Operation(summary = "API get all cart items")
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Success"),
+            @ApiResponse(responseCode = "400", description = "Bad request"),
+            @ApiResponse(responseCode = "404", description = "Not found"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")}
     )
     @GetMapping(value = V1 + root)
     public Response<?> getAllCartItems(HttpServletRequest httpServletRequest, @PageableDefault(sort = "id", direction = Sort.Direction.DESC, page = 0, size = 10) Pageable pageable) {
@@ -75,3 +75,4 @@ public class CartController extends BaseController {
         return cartService.getAllCartItemInfo(userId, pageable);
     }
 }
+

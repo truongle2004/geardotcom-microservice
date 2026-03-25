@@ -1,8 +1,8 @@
 package web_ecommerce.sale_service.controller;
 
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -21,10 +21,10 @@ public class CouponController extends BaseController {
     private static final String root = "coupon";
     private final CouponService couponService;
 
-    @ApiOperation(value = "API get list product")
-    @ApiResponses(value = {@ApiResponse(code = 200, message = "Success"),
-            @ApiResponse(code = 400, message = "Bad request"),
-            @ApiResponse(code = 500, message = "Internal server error")}
+    @Operation(summary = "API get list product")
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Success"),
+            @ApiResponse(responseCode = "400", description = "Bad request"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")}
     )
     @PostMapping(V1 + root + "/validate")
     public Response<?> validationResultDtoResponse(HttpServletRequest request, @RequestBody ValidateCouponDto validateCouponDto) {
@@ -33,3 +33,4 @@ public class CouponController extends BaseController {
         return new Response<>().withDataAndStatus(couponValidationResultDto, HttpStatus.OK);
     }
 }
+

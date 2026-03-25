@@ -1,9 +1,9 @@
 package web_ecommerce.sale_service.controller.admin;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,16 +20,16 @@ import web_ecommerce.sale_service.service.ProductVendorService;
 @RestController
 @RequestMapping("/admin")
 @RequiredArgsConstructor
-@Api(tags = "Admin - Vendor Management")
+@Tag(name = "Admin - Vendor Management")
 public class AdminVendorController extends BaseController {
     private static final String root = "/vendors";
     private final ProductVendorService vendorService;
 
-    @ApiOperation(value = "Create new vendor")
+    @Operation(summary = "Create new vendor")
     @ApiResponses(value = {
-            @ApiResponse(code = 201, message = "Created"),
-            @ApiResponse(code = 400, message = "Bad request"),
-            @ApiResponse(code = 500, message = "Internal server error")
+            @ApiResponse(responseCode = "201", description = "Created"),
+            @ApiResponse(responseCode = "400", description = "Bad request"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @PostMapping(V1 + root)
     public Response<ProductVendorDto> createVendor(@RequestBody CreateProductVendorDto createDto) {
@@ -37,10 +37,10 @@ public class AdminVendorController extends BaseController {
         return new Response<ProductVendorDto>().withDataAndStatus(vendor, HttpStatus.CREATED);
     }
 
-    @ApiOperation(value = "Get all vendors")
+    @Operation(summary = "Get all vendors")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Success"),
-            @ApiResponse(code = 500, message = "Internal server error")
+            @ApiResponse(responseCode = "200", description = "Success"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @GetMapping(V1 + root)
     public Response<Page<ProductVendorDto>> getAllVendors(
@@ -49,11 +49,11 @@ public class AdminVendorController extends BaseController {
         return new Response<Page<ProductVendorDto>>().withDataAndStatus(vendors, HttpStatus.OK);
     }
 
-    @ApiOperation(value = "Get vendor by ID")
+    @Operation(summary = "Get vendor by ID")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Success"),
-            @ApiResponse(code = 404, message = "Not found"),
-            @ApiResponse(code = 500, message = "Internal server error")
+            @ApiResponse(responseCode = "200", description = "Success"),
+            @ApiResponse(responseCode = "404", description = "Not found"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @GetMapping(V1 + root + "/{id}")
     public Response<ProductVendorDto> getVendorById(@PathVariable String id) {
@@ -62,11 +62,11 @@ public class AdminVendorController extends BaseController {
                 .orElse(new Response<ProductVendorDto>().withDataAndStatus(null, HttpStatus.NOT_FOUND));
     }
 
-    @ApiOperation(value = "Update vendor")
+    @Operation(summary = "Update vendor")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Success"),
-            @ApiResponse(code = 404, message = "Not found"),
-            @ApiResponse(code = 500, message = "Internal server error")
+            @ApiResponse(responseCode = "200", description = "Success"),
+            @ApiResponse(responseCode = "404", description = "Not found"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @PutMapping(V1 + root + "/{id}")
     public Response<ProductVendorDto> updateVendor(@PathVariable String id, @RequestBody CreateProductVendorDto updateDto) {
@@ -74,11 +74,11 @@ public class AdminVendorController extends BaseController {
         return new Response<ProductVendorDto>().withDataAndStatus(updated, HttpStatus.OK);
     }
 
-    @ApiOperation(value = "Delete vendor")
+    @Operation(summary = "Delete vendor")
     @ApiResponses(value = {
-            @ApiResponse(code = 204, message = "No content"),
-            @ApiResponse(code = 404, message = "Not found"),
-            @ApiResponse(code = 500, message = "Internal server error")
+            @ApiResponse(responseCode = "204", description = "No content"),
+            @ApiResponse(responseCode = "404", description = "Not found"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @DeleteMapping(V1 + root + "/{id}")
     public Response<Void> deleteVendor(@PathVariable String id) {
@@ -86,4 +86,5 @@ public class AdminVendorController extends BaseController {
         return new Response<Void>().withDataAndStatus(null, HttpStatus.NO_CONTENT);
     }
 }
+
 

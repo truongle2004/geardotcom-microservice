@@ -1,9 +1,9 @@
 package web_ecommerce.sale_service.controller.admin;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -24,16 +24,16 @@ import java.util.List;
 @RestController
 @RequestMapping("/admin")
 @RequiredArgsConstructor
-@Api(tags = "Admin - Warehouse Management")
+@Tag(name = "Admin - Warehouse Management")
 public class AdminWarehouseController extends BaseController {
     private static final String root = "/warehouses";
     private final WarehouseService warehouseService;
 
-    @ApiOperation(value = "Create new warehouse")
+    @Operation(summary = "Create new warehouse")
     @ApiResponses(value = {
-            @ApiResponse(code = 201, message = "Created"),
-            @ApiResponse(code = 400, message = "Bad request"),
-            @ApiResponse(code = 500, message = "Internal server error")
+            @ApiResponse(responseCode = "201", description = "Created"),
+            @ApiResponse(responseCode = "400", description = "Bad request"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @PostMapping(V1 + root)
     public Response<WarehouseDto> createWarehouse(@RequestBody CreateWarehouseDto createDto) {
@@ -41,10 +41,10 @@ public class AdminWarehouseController extends BaseController {
         return new Response<WarehouseDto>().withDataAndStatus(warehouse, HttpStatus.CREATED);
     }
 
-    @ApiOperation(value = "Get all warehouses")
+    @Operation(summary = "Get all warehouses")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Success"),
-            @ApiResponse(code = 500, message = "Internal server error")
+            @ApiResponse(responseCode = "200", description = "Success"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @GetMapping(V1 + root)
     public Response<Page<WarehouseDto>> getAllWarehouses(
@@ -53,10 +53,10 @@ public class AdminWarehouseController extends BaseController {
         return new Response<Page<WarehouseDto>>().withDataAndStatus(warehouses, HttpStatus.OK);
     }
 
-    @ApiOperation(value = "Get active warehouses")
+    @Operation(summary = "Get active warehouses")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Success"),
-            @ApiResponse(code = 500, message = "Internal server error")
+            @ApiResponse(responseCode = "200", description = "Success"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @GetMapping(V1 + root + "/active")
     public Response<List<WarehouseDto>> getActiveWarehouses() {
@@ -64,11 +64,11 @@ public class AdminWarehouseController extends BaseController {
         return new Response<List<WarehouseDto>>().withDataAndStatus(warehouses, HttpStatus.OK);
     }
 
-    @ApiOperation(value = "Get warehouse by ID")
+    @Operation(summary = "Get warehouse by ID")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Success"),
-            @ApiResponse(code = 404, message = "Not found"),
-            @ApiResponse(code = 500, message = "Internal server error")
+            @ApiResponse(responseCode = "200", description = "Success"),
+            @ApiResponse(responseCode = "404", description = "Not found"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @GetMapping(V1 + root + "/{id}")
     public Response<WarehouseDto> getWarehouseById(@PathVariable Long id) {
@@ -77,11 +77,11 @@ public class AdminWarehouseController extends BaseController {
                 .orElse(new Response<WarehouseDto>().withDataAndStatus(null, HttpStatus.NOT_FOUND));
     }
 
-    @ApiOperation(value = "Update warehouse")
+    @Operation(summary = "Update warehouse")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Success"),
-            @ApiResponse(code = 404, message = "Not found"),
-            @ApiResponse(code = 500, message = "Internal server error")
+            @ApiResponse(responseCode = "200", description = "Success"),
+            @ApiResponse(responseCode = "404", description = "Not found"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @PutMapping(V1 + root + "/{id}")
     public Response<WarehouseDto> updateWarehouse(@PathVariable Long id, @RequestBody CreateWarehouseDto updateDto) {
@@ -89,11 +89,11 @@ public class AdminWarehouseController extends BaseController {
         return new Response<WarehouseDto>().withDataAndStatus(updated, HttpStatus.OK);
     }
 
-    @ApiOperation(value = "Delete warehouse")
+    @Operation(summary = "Delete warehouse")
     @ApiResponses(value = {
-            @ApiResponse(code = 204, message = "No content"),
-            @ApiResponse(code = 404, message = "Not found"),
-            @ApiResponse(code = 500, message = "Internal server error")
+            @ApiResponse(responseCode = "204", description = "No content"),
+            @ApiResponse(responseCode = "404", description = "Not found"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @DeleteMapping(V1 + root + "/{id}")
     public Response<Void> deleteWarehouse(@PathVariable Long id) {
@@ -101,11 +101,11 @@ public class AdminWarehouseController extends BaseController {
         return new Response<Void>().withDataAndStatus(null, HttpStatus.NO_CONTENT);
     }
 
-    @ApiOperation(value = "Update product stock in warehouse")
+    @Operation(summary = "Update product stock in warehouse")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Success"),
-            @ApiResponse(code = 404, message = "Not found"),
-            @ApiResponse(code = 500, message = "Internal server error")
+            @ApiResponse(responseCode = "200", description = "Success"),
+            @ApiResponse(responseCode = "404", description = "Not found"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @PostMapping(V1 + root + "/stock")
     public Response<WarehouseDetailDto> updateStock(@RequestBody UpdateWarehouseStockDto updateStockDto) {
@@ -113,10 +113,10 @@ public class AdminWarehouseController extends BaseController {
         return new Response<WarehouseDetailDto>().withDataAndStatus(detail, HttpStatus.OK);
     }
 
-    @ApiOperation(value = "Get stock by product ID")
+    @Operation(summary = "Get stock by product ID")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Success"),
-            @ApiResponse(code = 500, message = "Internal server error")
+            @ApiResponse(responseCode = "200", description = "Success"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @GetMapping(V1 + root + "/stock/product/{productId}")
     public Response<List<WarehouseDetailDto>> getStockByProductId(@PathVariable String productId) {
@@ -124,10 +124,10 @@ public class AdminWarehouseController extends BaseController {
         return new Response<List<WarehouseDetailDto>>().withDataAndStatus(stock, HttpStatus.OK);
     }
 
-    @ApiOperation(value = "Get stock by warehouse ID")
+    @Operation(summary = "Get stock by warehouse ID")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Success"),
-            @ApiResponse(code = 500, message = "Internal server error")
+            @ApiResponse(responseCode = "200", description = "Success"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @GetMapping(V1 + root + "/{warehouseId}/stock")
     public Response<List<WarehouseDetailDto>> getStockByWarehouseId(@PathVariable Long warehouseId) {
@@ -135,10 +135,10 @@ public class AdminWarehouseController extends BaseController {
         return new Response<List<WarehouseDetailDto>>().withDataAndStatus(stock, HttpStatus.OK);
     }
 
-    @ApiOperation(value = "Get total stock for a product across all warehouses")
+    @Operation(summary = "Get total stock for a product across all warehouses")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Success"),
-            @ApiResponse(code = 500, message = "Internal server error")
+            @ApiResponse(responseCode = "200", description = "Success"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @GetMapping(V1 + root + "/stock/product/{productId}/total")
     public Response<Long> getTotalStock(@PathVariable String productId) {
@@ -146,4 +146,5 @@ public class AdminWarehouseController extends BaseController {
         return new Response<Long>().withDataAndStatus(total, HttpStatus.OK);
     }
 }
+
 

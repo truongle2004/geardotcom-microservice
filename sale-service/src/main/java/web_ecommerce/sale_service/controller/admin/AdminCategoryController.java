@@ -1,9 +1,9 @@
 package web_ecommerce.sale_service.controller.admin;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,16 +22,16 @@ import java.util.List;
 @RestController
 @RequestMapping("/admin")
 @RequiredArgsConstructor
-@Api(tags = "Admin - Category Management")
+@Tag(name = "Admin - Category Management")
 public class AdminCategoryController extends BaseController {
     private static final String root = "/categories";
     private final ProductCategoryService categoryService;
 
-    @ApiOperation(value = "Create new category")
+    @Operation(summary = "Create new category")
     @ApiResponses(value = {
-            @ApiResponse(code = 201, message = "Created"),
-            @ApiResponse(code = 400, message = "Bad request"),
-            @ApiResponse(code = 500, message = "Internal server error")
+            @ApiResponse(responseCode = "201", description = "Created"),
+            @ApiResponse(responseCode = "400", description = "Bad request"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @PostMapping(V1 + root)
     public Response<ProductCategoryDto> createCategory(@RequestBody CreateProductCategoryDto createDto) {
@@ -39,10 +39,10 @@ public class AdminCategoryController extends BaseController {
         return new Response<ProductCategoryDto>().withDataAndStatus(category, HttpStatus.CREATED);
     }
 
-    @ApiOperation(value = "Get all categories")
+    @Operation(summary = "Get all categories")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Success"),
-            @ApiResponse(code = 500, message = "Internal server error")
+            @ApiResponse(responseCode = "200", description = "Success"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @GetMapping(V1 + root)
     public Response<Page<ProductCategoryDto>> getAllCategories(
@@ -51,10 +51,10 @@ public class AdminCategoryController extends BaseController {
         return new Response<Page<ProductCategoryDto>>().withDataAndStatus(categories, HttpStatus.OK);
     }
 
-    @ApiOperation(value = "Get featured categories")
+    @Operation(summary = "Get featured categories")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Success"),
-            @ApiResponse(code = 500, message = "Internal server error")
+            @ApiResponse(responseCode = "200", description = "Success"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @GetMapping(V1 + root + "/featured")
     public Response<List<ProductCategoryDto>> getFeaturedCategories() {
@@ -62,11 +62,11 @@ public class AdminCategoryController extends BaseController {
         return new Response<List<ProductCategoryDto>>().withDataAndStatus(categories, HttpStatus.OK);
     }
 
-    @ApiOperation(value = "Get category by ID")
+    @Operation(summary = "Get category by ID")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Success"),
-            @ApiResponse(code = 404, message = "Not found"),
-            @ApiResponse(code = 500, message = "Internal server error")
+            @ApiResponse(responseCode = "200", description = "Success"),
+            @ApiResponse(responseCode = "404", description = "Not found"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @GetMapping(V1 + root + "/{id}")
     public Response<ProductCategoryDto> getCategoryById(@PathVariable String id) {
@@ -75,11 +75,11 @@ public class AdminCategoryController extends BaseController {
                 .orElse(new Response<ProductCategoryDto>().withDataAndStatus(null, HttpStatus.NOT_FOUND));
     }
 
-    @ApiOperation(value = "Update category")
+    @Operation(summary = "Update category")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Success"),
-            @ApiResponse(code = 404, message = "Not found"),
-            @ApiResponse(code = 500, message = "Internal server error")
+            @ApiResponse(responseCode = "200", description = "Success"),
+            @ApiResponse(responseCode = "404", description = "Not found"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @PutMapping(V1 + root + "/{id}")
     public Response<ProductCategoryDto> updateCategory(@PathVariable String id, @RequestBody CreateProductCategoryDto updateDto) {
@@ -87,11 +87,11 @@ public class AdminCategoryController extends BaseController {
         return new Response<ProductCategoryDto>().withDataAndStatus(updated, HttpStatus.OK);
     }
 
-    @ApiOperation(value = "Delete category")
+    @Operation(summary = "Delete category")
     @ApiResponses(value = {
-            @ApiResponse(code = 204, message = "No content"),
-            @ApiResponse(code = 404, message = "Not found"),
-            @ApiResponse(code = 500, message = "Internal server error")
+            @ApiResponse(responseCode = "204", description = "No content"),
+            @ApiResponse(responseCode = "404", description = "Not found"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @DeleteMapping(V1 + root + "/{id}")
     public Response<Void> deleteCategory(@PathVariable String id) {
@@ -99,4 +99,5 @@ public class AdminCategoryController extends BaseController {
         return new Response<Void>().withDataAndStatus(null, HttpStatus.NO_CONTENT);
     }
 }
+
 

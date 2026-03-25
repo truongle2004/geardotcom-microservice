@@ -51,21 +51,21 @@ public class ProductServiceImpl implements ProductService {
         this.entityManager = entityManager;
     }
 
-    /**
-     * Rebuild search indexes on application startup
-     */
-    @PostConstruct
-    @Transactional
-    public void rebuildSearchIndexes() {
-        try {
-            log.info("Rebuilding search indexes...");
-            SearchSession searchSession = Search.session(entityManager);
-            searchSession.massIndexer(Product.class).startAndWait();
-            log.info("Search indexes rebuilt successfully");
-        } catch (Exception e) {
-            log.error("Error rebuilding search indexes", e);
-        }
-    }
+//    /**
+//     * Rebuild search indexes on application startup
+//     */
+//    @PostConstruct
+//    @Transactional
+//    public void rebuildSearchIndexes() {
+//        try {
+//            log.info("Rebuilding search indexes...");
+//            SearchSession searchSession = Search.session(entityManager);
+//            searchSession.massIndexer(Product.class).startAndWait();
+//            log.info("Search indexes rebuilt successfully");
+//        } catch (Exception e) {
+//            log.error("Error rebuilding search indexes", e);
+//        }
+//    }
 
     @Override
     public Response<Page<ProductDTO>> getListProductByCategory(Pageable pageable, String category, String vendor, BigDecimal minPrice, BigDecimal maxPrice) {

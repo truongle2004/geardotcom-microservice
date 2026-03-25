@@ -1,8 +1,8 @@
 package web_ecommerce.sale_service.controller;
 
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -42,10 +42,10 @@ public class ProductController extends BaseController {
         this.productService = productService;
     }
 
-    @ApiOperation(value = "API get list product")
-    @ApiResponses(value = {@ApiResponse(code = 200, message = "Success"),
-            @ApiResponse(code = 400, message = "Bad request"),
-            @ApiResponse(code = 500, message = "Internal server error")}
+    @Operation(summary = "API get list product")
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Success"),
+            @ApiResponse(responseCode = "400", description = "Bad request"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")}
     )
     @GetMapping(value = V1 + root)
     public Response<Page<ProductDTO>> getListProduct(
@@ -58,10 +58,10 @@ public class ProductController extends BaseController {
         return productService.getListProductByCategory(pageable, category, vendor, min, max);
     }
 
-    @ApiOperation(value = "API search products (Hibernate Search)")
-    @ApiResponses(value = {@ApiResponse(code = 200, message = "Success"),
-            @ApiResponse(code = 400, message = "Bad request"),
-            @ApiResponse(code = 500, message = "Internal server error")}
+    @Operation(summary = "API search products (Hibernate Search)")
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Success"),
+            @ApiResponse(responseCode = "400", description = "Bad request"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")}
     )
     @GetMapping(value = V1 + root + "/search")
     public Response<Page<ProductDTO>> searchProducts(
@@ -75,11 +75,11 @@ public class ProductController extends BaseController {
         return productService.searchProducts(pageable, query, category, vendor, min, max);
     }
 
-    @ApiOperation(value = "API get product detail")
-    @ApiResponses(value = {@ApiResponse(code = 200, message = "Success"),
-            @ApiResponse(code = 400, message = "Bad request"),
-            @ApiResponse(code = 404, message = "Not found"),
-            @ApiResponse(code = 500, message = "Internal server error")}
+    @Operation(summary = "API get product detail")
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Success"),
+            @ApiResponse(responseCode = "400", description = "Bad request"),
+            @ApiResponse(responseCode = "404", description = "Not found"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")}
     )
     @GetMapping(value = V1 + root + "/{id}")
     public Response<ProductDTO> getProductDetail(
@@ -88,22 +88,22 @@ public class ProductController extends BaseController {
         return productService.getById(id);
     }
 
-    @ApiOperation(value = "API get list category")
-    @ApiResponses(value = {@ApiResponse(code = 200, message = "Success"),
-            @ApiResponse(code = 400, message = "Bad request"),
-            @ApiResponse(code = 404, message = "Not found"),
-            @ApiResponse(code = 500, message = "Internal server error")}
+    @Operation(summary = "API get list category")
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Success"),
+            @ApiResponse(responseCode = "400", description = "Bad request"),
+            @ApiResponse(responseCode = "404", description = "Not found"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")}
     )
     @GetMapping(value = V1 + root + "/categories")
     public Response<List<CategoryDTO>> getListCategory() {
         return productService.getAllProductCategory();
     }
 
-    @ApiOperation(value = "API get image")
-    @ApiResponses(value = {@ApiResponse(code = 200, message = "Success"),
-            @ApiResponse(code = 400, message = "Bad request"),
-            @ApiResponse(code = 404, message = "Not found"),
-            @ApiResponse(code = 500, message = "Internal server error")}
+    @Operation(summary = "API get image")
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Success"),
+            @ApiResponse(responseCode = "400", description = "Bad request"),
+            @ApiResponse(responseCode = "404", description = "Not found"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")}
     )
     @GetMapping(value = V1 + root + "/images/{filename:.+}")
     public ResponseEntity<Resource> getImage(@PathVariable String filename) {
@@ -124,47 +124,47 @@ public class ProductController extends BaseController {
         }
     }
 
-    @ApiOperation(value = "API get vendor")
-    @ApiResponses(value = {@ApiResponse(code = 200, message = "Success"),
-            @ApiResponse(code = 400, message = "Bad request"),
-            @ApiResponse(code = 500, message = "Internal server error")}
+    @Operation(summary = "API get vendor")
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Success"),
+            @ApiResponse(responseCode = "400", description = "Bad request"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")}
     )
     @GetMapping(value = V1 + root + "/vendors")
     public Response<List<VendorDTO>> getVendor() {
         return productService.getAllVendor();
     }
 
-    @ApiOperation(value = "API get best sellers")
-    @ApiResponses(value = {@ApiResponse(code = 200, message = "Success"),
-            @ApiResponse(code = 500, message = "Internal server error")}
+    @Operation(summary = "API get best sellers")
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Success"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")}
     )
     @GetMapping(value = V1 + root + "/best-sellers")
     public Response<Page<ProductDTO>> getBestSellers(Pageable pageable) {
         return productService.getBestSellers(pageable);
     }
 
-    @ApiOperation(value = "API get featured products")
-    @ApiResponses(value = {@ApiResponse(code = 200, message = "Success"),
-            @ApiResponse(code = 500, message = "Internal server error")}
+    @Operation(summary = "API get featured products")
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Success"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")}
     )
     @GetMapping(value = V1 + root + "/featured")
     public Response<Page<ProductDTO>> getFeaturedProducts(Pageable pageable) {
         return productService.getFeaturedProducts(pageable);
     }
 
-    @ApiOperation(value = "API get top rated products")
-    @ApiResponses(value = {@ApiResponse(code = 200, message = "Success"),
-            @ApiResponse(code = 500, message = "Internal server error")}
+    @Operation(summary = "API get top rated products")
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Success"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")}
     )
     @GetMapping(value = V1 + root + "/top-rated")
     public Response<Page<ProductDTO>> getTopRatedProducts(Pageable pageable) {
         return productService.getTopRatedProducts(pageable);
     }
 
-//    @ApiOperation(value = "API search products with Vietnamese text support")
-//    @ApiResponses(value = {@ApiResponse(code = 200, message = "Success"),
-//            @ApiResponse(code = 400, message = "Bad request"),
-//            @ApiResponse(code = 500, message = "Internal server error")}
+//    @Operation(summary = "API search products with Vietnamese text support")
+//    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Success"),
+//            @ApiResponse(responseCode = "400", description = "Bad request"),
+//            @ApiResponse(responseCode = "500", description = "Internal server error")}
 //    )
 //    @GetMapping(value = V1 + root + "/search-vietnamese")
 //    public Response<Page<ProductDTO>> searchProductsVietnamese(
@@ -178,10 +178,10 @@ public class ProductController extends BaseController {
 //        return vietnameseSearchService.searchProductsVietnamese(pageable, query, category, vendor, min, max);
 //    }
 
-//    @ApiOperation(value = "API search products with Vietnamese text normalization")
-//    @ApiResponses(value = {@ApiResponse(code = 200, message = "Success"),
-//            @ApiResponse(code = 400, message = "Bad request"),
-//            @ApiResponse(code = 500, message = "Internal server error")}
+//    @Operation(summary = "API search products with Vietnamese text normalization")
+//    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Success"),
+//            @ApiResponse(responseCode = "400", description = "Bad request"),
+//            @ApiResponse(responseCode = "500", description = "Internal server error")}
 //    )
 //    @GetMapping(value = V1 + root + "/search-normalized")
 //    public Response<Page<ProductDTO>> searchProductsNormalized(
@@ -195,10 +195,10 @@ public class ProductController extends BaseController {
 //        return vietnameseSearchService.searchProductsNormalized(pageable, query, category, vendor, min, max);
 //    }
 //
-//    @ApiOperation(value = "API get search suggestions for autocomplete")
-//    @ApiResponses(value = {@ApiResponse(code = 200, message = "Success"),
-//            @ApiResponse(code = 400, message = "Bad request"),
-//            @ApiResponse(code = 500, message = "Internal server error")}
+//    @Operation(summary = "API get search suggestions for autocomplete")
+//    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Success"),
+//            @ApiResponse(responseCode = "400", description = "Bad request"),
+//            @ApiResponse(responseCode = "500", description = "Internal server error")}
 //    )
 //    @GetMapping(value = V1 + root + "/search-suggestions")
 //    public Response<List<String>> getSearchSuggestions(
@@ -208,3 +208,4 @@ public class ProductController extends BaseController {
 //        return vietnameseSearchService.getSearchSuggestions(query, limit);
 //    }
 }
+

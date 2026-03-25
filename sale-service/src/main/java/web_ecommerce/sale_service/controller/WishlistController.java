@@ -1,8 +1,8 @@
 package web_ecommerce.sale_service.controller;
 
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -23,12 +23,12 @@ public class WishlistController extends BaseController {
     private static final String root = "/sale/wishlist";
     private final WishlistService wishlistService;
 
-    @ApiOperation(value = "API get list product")
-    @ApiResponses(value = {@ApiResponse(code = 200, message = "Success"),
-            @ApiResponse(code = 400, message = "Bad request"),
-            @ApiResponse(code = 404, message = "Not Found"),
-            @ApiResponse(code = 409, message = "Conflict"),
-            @ApiResponse(code = 500, message = "Internal server error")}
+    @Operation(summary = "API get list product")
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Success"),
+            @ApiResponse(responseCode = "400", description = "Bad request"),
+            @ApiResponse(responseCode = "404", description = "Not Found"),
+            @ApiResponse(responseCode = "409", description = "Conflict"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")}
     )
     @PostMapping(value = V1 + root)
     public Response<?> addWishlist(HttpServletRequest httpServletRequest, @RequestBody AddToWishlistDto addToWishlistDto) {
@@ -41,3 +41,4 @@ public class WishlistController extends BaseController {
 
     
 }
+

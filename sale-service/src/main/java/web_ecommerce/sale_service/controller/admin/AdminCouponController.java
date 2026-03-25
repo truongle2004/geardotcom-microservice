@@ -1,9 +1,9 @@
 package web_ecommerce.sale_service.controller.admin;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,16 +20,16 @@ import web_ecommerce.sale_service.service.CouponService;
 @RestController
 @RequestMapping("/admin")
 @RequiredArgsConstructor
-@Api(tags = "Admin - Coupon Management")
+@Tag(name = "Admin - Coupon Management")
 public class AdminCouponController extends BaseController {
     private static final String root = "/coupons";
     private final CouponService couponService;
 
-    @ApiOperation(value = "Create new coupon")
+    @Operation(summary = "Create new coupon")
     @ApiResponses(value = {
-            @ApiResponse(code = 201, message = "Created"),
-            @ApiResponse(code = 400, message = "Bad request"),
-            @ApiResponse(code = 500, message = "Internal server error")
+            @ApiResponse(responseCode = "201", description = "Created"),
+            @ApiResponse(responseCode = "400", description = "Bad request"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @PostMapping(V1 + root)
     public Response<CouponDto> createCoupon(@RequestBody CreateCouponDto createCouponDto) {
@@ -37,10 +37,10 @@ public class AdminCouponController extends BaseController {
         return new Response<CouponDto>().withDataAndStatus(coupon, HttpStatus.CREATED);
     }
 
-    @ApiOperation(value = "Get all coupons")
+    @Operation(summary = "Get all coupons")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Success"),
-            @ApiResponse(code = 500, message = "Internal server error")
+            @ApiResponse(responseCode = "200", description = "Success"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @GetMapping(V1 + root)
     public Response<Page<CouponDto>> getAllCoupons(
@@ -49,11 +49,11 @@ public class AdminCouponController extends BaseController {
         return new Response<Page<CouponDto>>().withDataAndStatus(coupons, HttpStatus.OK);
     }
 
-    @ApiOperation(value = "Get coupon by ID")
+    @Operation(summary = "Get coupon by ID")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Success"),
-            @ApiResponse(code = 404, message = "Not found"),
-            @ApiResponse(code = 500, message = "Internal server error")
+            @ApiResponse(responseCode = "200", description = "Success"),
+            @ApiResponse(responseCode = "404", description = "Not found"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @GetMapping(V1 + root + "/{id}")
     public Response<CouponDto> getCouponById(@PathVariable String id) {
@@ -62,11 +62,11 @@ public class AdminCouponController extends BaseController {
                 .orElse(new Response<CouponDto>().withDataAndStatus(null, HttpStatus.NOT_FOUND));
     }
 
-    @ApiOperation(value = "Update coupon")
+    @Operation(summary = "Update coupon")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Success"),
-            @ApiResponse(code = 404, message = "Not found"),
-            @ApiResponse(code = 500, message = "Internal server error")
+            @ApiResponse(responseCode = "200", description = "Success"),
+            @ApiResponse(responseCode = "404", description = "Not found"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @PutMapping(V1 + root + "/{id}")
     public Response<CouponDto> updateCoupon(@PathVariable String id, @RequestBody CreateCouponDto updateCouponDto) {
@@ -74,11 +74,11 @@ public class AdminCouponController extends BaseController {
         return new Response<CouponDto>().withDataAndStatus(updated, HttpStatus.OK);
     }
 
-    @ApiOperation(value = "Delete coupon")
+    @Operation(summary = "Delete coupon")
     @ApiResponses(value = {
-            @ApiResponse(code = 204, message = "No content"),
-            @ApiResponse(code = 404, message = "Not found"),
-            @ApiResponse(code = 500, message = "Internal server error")
+            @ApiResponse(responseCode = "204", description = "No content"),
+            @ApiResponse(responseCode = "404", description = "Not found"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @DeleteMapping(V1 + root + "/{id}")
     public Response<Void> deleteCoupon(@PathVariable String id) {
@@ -86,11 +86,11 @@ public class AdminCouponController extends BaseController {
         return new Response<Void>().withDataAndStatus(null, HttpStatus.NO_CONTENT);
     }
 
-    @ApiOperation(value = "Activate coupon")
+    @Operation(summary = "Activate coupon")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Success"),
-            @ApiResponse(code = 404, message = "Not found"),
-            @ApiResponse(code = 500, message = "Internal server error")
+            @ApiResponse(responseCode = "200", description = "Success"),
+            @ApiResponse(responseCode = "404", description = "Not found"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @PatchMapping(V1 + root + "/{id}/activate")
     public Response<Void> activateCoupon(@PathVariable String id) {
@@ -98,11 +98,11 @@ public class AdminCouponController extends BaseController {
         return new Response<Void>().withDataAndStatus(null, HttpStatus.OK);
     }
 
-    @ApiOperation(value = "Deactivate coupon")
+    @Operation(summary = "Deactivate coupon")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Success"),
-            @ApiResponse(code = 404, message = "Not found"),
-            @ApiResponse(code = 500, message = "Internal server error")
+            @ApiResponse(responseCode = "200", description = "Success"),
+            @ApiResponse(responseCode = "404", description = "Not found"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @PatchMapping(V1 + root + "/{id}/deactivate")
     public Response<Void> deactivateCoupon(@PathVariable String id) {
@@ -110,4 +110,5 @@ public class AdminCouponController extends BaseController {
         return new Response<Void>().withDataAndStatus(null, HttpStatus.OK);
     }
 }
+
 

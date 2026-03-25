@@ -1,7 +1,7 @@
 package web_ecommerce.core.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,20 +17,20 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public abstract class BaseDTO {
 
-    @ApiModelProperty(name = "Id")
+    @Schema(name = "Id")
     public Long id;
 
-    @ApiModelProperty(notes = "Ngày tạo")
+    @Schema(description = "Ngày tạo")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = Constants.DATE_TIME_PATTERN)
     public LocalDateTime createdAt;
 
-    @ApiModelProperty(notes = "Ngày cập nhật")
+    @Schema(description = "Ngày cập nhật")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = Constants.DATE_TIME_PATTERN)
     public LocalDateTime updatedAt;
 
-    @ApiModelProperty(notes = "Người tạo")
+    @Schema(description = "Người tạo")
     public String createdBy;
 
-    @ApiModelProperty(notes = "Người cập nhật")
+    @Schema(description = "Người cập nhật")
     public String updatedBy;
 }

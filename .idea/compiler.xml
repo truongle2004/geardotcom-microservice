@@ -29,15 +29,15 @@
         </processorPath>
         <module name="user-service" />
         <module name="payment-service" />
-        <module name="common-service" />
         <module name="notifcation-service" />
         <module name="sale-service" />
-        <module name="notification-service" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="chat-service" target="11" />
+      <module name="common-service" target="11" />
       <module name="config-server" target="17" />
+      <module name="notification-service" target="11" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
