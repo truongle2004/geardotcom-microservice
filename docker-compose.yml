@@ -8,7 +8,7 @@ services:
     volumes:
       - geardotcom_postgres_data:/var/lib/postgresql/data
     ports:
-      - 5434:5432
+      - "5432:5432"
     networks:
       - ecommerce-network
     healthcheck:
@@ -31,39 +31,57 @@ services:
     depends_on:
       - discovery-service
     environment:
-      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-service:8761/eureka
+      - EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE=http://discovery-service:8761/eureka
+      - KEYCLOAK_REALM_URL=http://identity:9000/realms/geardotcom
     ports:
       - "8222:8222"
     networks:
       - ecommerce-network
 
-
   sale-service:
     build: ./sale-service
     container_name: sale-service
+    depends_on:
+      - database
+      - discovery-service
+      - gateway-service
     ports:
       - "8081:8081"
+    environment:
+      EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE: http://discovery-service:8761/eureka
+      SPRING_DATASOURCE_URL: jdbc:postgresql://database:5432/geardotcom
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
     networks:
       - ecommerce-network
 
-  #  keycloak_postgres:
-  #    image: postgres:15
-  #    environment:
-  #      POSTGRES_DB: keycloak
-  #      POSTGRES_USER: postgres
-  #      POSTGRES_PASSWORD: root
-  #      TZ: Asia/Ho_Chi_Minh   # <-- added here
-  #    volumes:
-  #      - keycloak_postgres_data:/var/lib/postgresql/data
-  #    ports:
-  #      - 5433:5432
-  #    networks:
-  #      - ecommerce-network
-  #    healthcheck:
-  #      test: ["CMD-SHELL", "pg_isready -U postgres"]
-  #      interval: 10s
-  #      timeout: 5s
-  #      retries: 5
+#  pgadmin:
+#    image: dpage/pgadmin4:6.20
+#    volumes:
+#      - pgadmin:/var/lib/pgadmin
+#    environment:
+#      PGADMIN_DEFAULT_EMAIL: admin
+#      PGADMIN_DEFAULT_PASSWORD: admin
+#    networks:
+#      - ecommerce-network
+
+  keycloak_postgres:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: keycloak
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: root
+    volumes:
+      - keycloak_postgres_data:/var/lib/postgresql/data
+    ports:
+      - 5433:5432
+    networks:
+      - ecommerce-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   identity:
     image: quay.io/keycloak/keycloak:21.0.2
