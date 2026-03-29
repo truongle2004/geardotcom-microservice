@@ -3,7 +3,7 @@ spring:
     name: sale-service
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://database:5434/geardotcom
+    url: jdbc:postgresql://localhost:5434/geardotcom
     username: postgres
     password: root
   jpa:

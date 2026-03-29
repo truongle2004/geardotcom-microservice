@@ -1,14 +1,15 @@
 services:
-  database:
+  geardotcom_postgres:
     image: postgres:15
+    container_name: geardotcom_postgres
     environment:
-      POSTGRES_DB: database
+      POSTGRES_DB: geardotcom
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: root
     volumes:
       - geardotcom_postgres_data:/var/lib/postgresql/data
     ports:
-      - "5432:5432"
+      - "5434:5432"
     networks:
       - ecommerce-network
     healthcheck:
@@ -24,6 +25,8 @@ services:
       - "8761:8761"
     networks:
       - ecommerce-network
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
 
   gateway-service:
     build: ./gateway
@@ -31,6 +34,7 @@ services:
     depends_on:
       - discovery-service
     environment:
+      - SPRING_PROFILES_ACTIVE=docker
       - EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE=http://discovery-service:8761/eureka
       - KEYCLOAK_REALM_URL=http://identity:9000/realms/geardotcom
     ports:
@@ -42,16 +46,17 @@ services:
     build: ./sale-service
     container_name: sale-service
     depends_on:
-      - database
+      - geardotcom_postgres
       - discovery-service
       - gateway-service
     ports:
       - "8081:8081"
     environment:
-      EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE: http://discovery-service:8761/eureka
-      SPRING_DATASOURCE_URL: jdbc:postgresql://database:5432/geardotcom
-      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USERNAME}
-      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
+      - SPRING_PROFILES_ACTIVE=docker
+      - EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE=http://discovery-service:8761/eureka
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://geardotcom_postgres:5432/geardotcom
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=root
     networks:
       - ecommerce-network
 
@@ -67,6 +72,7 @@ services:
 
   keycloak_postgres:
     image: postgres:15
+    container_name: keycloak_postgres
     environment:
       POSTGRES_DB: keycloak
       POSTGRES_USER: postgres
@@ -74,7 +80,7 @@ services:
     volumes:
       - keycloak_postgres_data:/var/lib/postgresql/data
     ports:
-      - 5433:5432
+      - "5433:5432"
     networks:
       - ecommerce-network
     healthcheck:
@@ -85,23 +91,24 @@ services:
 
   identity:
     image: quay.io/keycloak/keycloak:21.0.2
-    command: ['start-dev --import-realm']
+    command: ["start-dev --import-realm"]
+    container_name: keycloak
     environment:
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD: admin
       KC_PROXY: none
       KC_DB: postgres
-      KC_DB_URL: jdbc:postgresql://geardotcom:5432/geardotcom
+      KC_DB_URL: jdbc:postgresql://keycloak_postgres:5432/keycloak
       KC_DB_USERNAME: postgres
       KC_DB_PASSWORD: root
       KC_HTTP_PORT: 9000
     ports:
-      - 9000:9000
+      - "9000:9000"
     volumes:
       - ./identity/themes/geardotcom/theme:/opt/keycloak/themes
       - ./identity/realm-export.json:/opt/keycloak/data/import/realm-export.json
     depends_on:
-      - database
+      - keycloak_postgres
     networks:
       - ecommerce-network
 
@@ -124,6 +131,7 @@ services:
   #     KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
 volumes:
   geardotcom_postgres_data:
+  keycloak_postgres_data:
 
 networks:
   ecommerce-network:
