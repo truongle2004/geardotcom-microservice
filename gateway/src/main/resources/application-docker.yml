@@ -6,7 +6,8 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: ${KEYCLOAK_REALM_URL}
+          issuer-uri: ${KEYCLOAK_REALM_URL}                                          # localhost:9000 → matches token iss
+          jwk-set-uri: ${KEYCLOAK_INTERNAL_URL}/protocol/openid-connect/certs
 
 eureka:
   client:

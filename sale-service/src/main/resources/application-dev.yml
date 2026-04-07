@@ -17,5 +17,5 @@ eureka:
     service-url:
       defaultZone: http://localhost:8761/eureka
 
-file_upload-dir: C:\truongle_workspace\geardotcom-project\images
+file_upload-dir: C:\truongle_workspace\geardotcom-microservice\images
 file_upload-url: http://localhost:8222/api/v1/sale/products

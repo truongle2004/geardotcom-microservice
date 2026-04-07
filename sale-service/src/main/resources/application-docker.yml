@@ -18,5 +18,5 @@ eureka:
     service-url:
       defaultZone: ${EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE}
 
-file_upload-dir: C:\truongle_workspace\geardotcom-project\images
-file_upload-url: http://localhost:8222/api/v1/sale/products
+file_upload-dir: ${SPRING_IMAGE_DIR}
+file_upload-url: ${SPRING_UPLOAD_IMAGE_URL}

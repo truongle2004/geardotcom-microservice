@@ -36,7 +36,8 @@ services:
     environment:
       - SPRING_PROFILES_ACTIVE=docker
       - EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE=http://discovery-service:8761/eureka
-      - KEYCLOAK_REALM_URL=http://identity:9000/realms/geardotcom
+      - KEYCLOAK_REALM_URL=http://localhost:9000/realms/geardotcom       # ← public URL, matches token iss
+      - KEYCLOAK_INTERNAL_URL=http://identity:9000/realms/geardotcom     # ← internal Docker DNS, for JWK fetch
     ports:
       - "8222:8222"
     networks:
@@ -49,6 +50,8 @@ services:
       - geardotcom_postgres
       - discovery-service
       - gateway-service
+    volumes:
+      - ./images:/app/uploads
     ports:
       - "8081:8081"
     environment:
@@ -57,11 +60,14 @@ services:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://geardotcom_postgres:5432/geardotcom
       - SPRING_DATASOURCE_USERNAME=postgres
       - SPRING_DATASOURCE_PASSWORD=root
+      - SPRING_IMAGE_DIR=/app/uploads
+      - SPRING_UPLOAD_IMAGE_URL=http://discovery-service:8222/api/v1/sale/products
     networks:
       - ecommerce-network
 
 #  pgadmin:
 #    image: dpage/pgadmin4:6.20
+#    container_name: pgadmin
 #    volumes:
 #      - pgadmin:/var/lib/pgadmin
 #    environment:
@@ -91,17 +97,20 @@ services:
 
   identity:
     image: quay.io/keycloak/keycloak:21.0.2
-    command: ["start-dev --import-realm"]
+    command: [ "start-dev --import-realm" ]
     container_name: keycloak
     environment:
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD: admin
-      KC_PROXY: none
       KC_DB: postgres
       KC_DB_URL: jdbc:postgresql://keycloak_postgres:5432/keycloak
       KC_DB_USERNAME: postgres
       KC_DB_PASSWORD: root
       KC_HTTP_PORT: 9000
+      KC_HOSTNAME_URL: http://localhost:9000         # ← stamps iss in token
+      KC_HOSTNAME_ADMIN_URL: http://localhost:9000
+      KC_HOSTNAME_STRICT: false
+      KC_HOSTNAME_STRICT_HTTPS: false
     ports:
       - "9000:9000"
     volumes:
@@ -132,6 +141,7 @@ services:
 volumes:
   geardotcom_postgres_data:
   keycloak_postgres_data:
+#  pgadmin:
 
 networks:
   ecommerce-network:

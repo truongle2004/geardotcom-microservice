@@ -3,6 +3,7 @@ package com.web_ecommerce.gateway.security;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.web_ecommerce.gateway.exception.AccessDeniedExceptionHandler;
 import com.web_ecommerce.gateway.exception.AuthenticationExceptionHandler;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.Converter;
@@ -10,7 +11,11 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
+import org.springframework.security.oauth2.core.OAuth2TokenValidator;
 import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.jwt.JwtValidators;
+import org.springframework.security.oauth2.jwt.NimbusReactiveJwtDecoder;
+import org.springframework.security.oauth2.jwt.ReactiveJwtDecoder;
 import org.springframework.security.web.server.SecurityWebFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.reactive.CorsConfigurationSource;
@@ -27,6 +32,12 @@ public class SecurityConfig {
     private static final String ROLE_USER = "ROLE_USER";
     private static final String ROLE_ADMIN = "ROLE_ADMIN";
 
+    @Value("${spring.security.oauth2.resourceserver.jwt.jwk-set-uri}")
+    private String jwkSetUri;
+
+    @Value("${spring.security.oauth2.resourceserver.jwt.issuer-uri}")
+    private String issuerUri;
+
     public SecurityConfig(ObjectMapper objectMapper) {
         this.objectMapper = objectMapper;
     }
@@ -41,6 +52,19 @@ public class SecurityConfig {
         return new AccessDeniedExceptionHandler(objectMapper);
     }
 
+    @Bean
+    public ReactiveJwtDecoder jwtDecoder() {
+        NimbusReactiveJwtDecoder decoder = NimbusReactiveJwtDecoder
+                .withJwkSetUri(jwkSetUri)   // uses internal Docker DNS: identity:9000
+                .build();
+
+        // Validate iss against public URL (what's stamped in the token)
+        OAuth2TokenValidator<Jwt> issuerValidator =
+                JwtValidators.createDefaultWithIssuer(issuerUri);
+
+        decoder.setJwtValidator(issuerValidator);
+        return decoder;
+    }
 
     @Bean
     public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
@@ -115,7 +139,9 @@ public class SecurityConfig {
                 .oauth2ResourceServer(oauth2 -> oauth2
                         .authenticationEntryPoint(authenticationExceptionHandler())
                         .accessDeniedHandler(accessDeniedExceptionHandler())
-                        .jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverterForKeycloak())));
+                        .jwt(jwt -> jwt
+                                .jwtDecoder(jwtDecoder())
+                                .jwtAuthenticationConverter(jwtAuthenticationConverterForKeycloak())));
 
         http.csrf(ServerHttpSecurity.CsrfSpec::disable);
         return http.build();

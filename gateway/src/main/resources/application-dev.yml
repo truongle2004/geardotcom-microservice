@@ -6,7 +6,8 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: "http://localhost:9000/realms/geardotcom"
+          issuer-uri: http://localhost:9000/realms/geardotcom
+          jwk-set-uri: http://localhost:9000/realms/geardotcom/protocol/openid-connect/certs
 
 eureka:
   client:
