@@ -12,6 +12,10 @@ spring:
     hibernate:
       ddl-auto: update
     open-in-view: false
+  data:
+    redis:
+      host: ${SPRING_REDIS_HOST}
+      port: ${SPRING_REDIS_PORT}
 
 eureka:
   client:

@@ -18,6 +18,21 @@ services:
       timeout: 5s
       retries: 5
 
+  redis:
+    image: redis:7-alpine
+    container_name: redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - ecommerce-network
+    healthcheck:
+      test: ['CMD-SHELL', 'redis-cli ping | grep PONG']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
   discovery-service:
     build: ./discovery-service
     container_name: discovery-service
@@ -50,6 +65,7 @@ services:
       - geardotcom_postgres
       - discovery-service
       - gateway-service
+      - redis
     volumes:
       - ./images:/app/uploads
     ports:
@@ -62,8 +78,72 @@ services:
       - SPRING_DATASOURCE_PASSWORD=root
       - SPRING_IMAGE_DIR=/app/uploads
       - SPRING_UPLOAD_IMAGE_URL=http://discovery-service:8222/api/v1/sale/products
+      - SPRING_REDIS_HOST=redis
+      - SPRING_REDIS_PORT=6379
     networks:
       - ecommerce-network
+
+  user-service:
+    build: ./user-service
+    container_name: user-service
+    depends_on:
+      - geardotcom_postgres
+      - discovery-service
+      - gateway-service
+    ports:
+      - "8083:8083"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE=http://discovery-service:8761/eureka
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://geardotcom_postgres:5432/geardotcom
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=root
+    networks:
+      - ecommerce-network
+
+  payment-service:
+    build: ./payment-service
+    container_name: payment-service
+    depends_on:
+      - geardotcom_postgres
+      - discovery-service
+      - gateway-service
+    ports:
+      - "8082:8082"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE=http://discovery-service:8761/eureka
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://geardotcom_postgres:5432/geardotcom
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=root
+      - VNP_TMN_CODE=test123
+      - VNP_PAY_URL=http://localhost:9000/pay
+      - VNP_SECRET_KEY=test_secret_key_123
+      - VNP_API_URL=http://localhost:9000/api
+      - VNP_RETURN_URL=http://localhost:8222/api/v1/sale/orders/return
+    networks:
+      - ecommerce-network
+
+  # notification-service:
+  #   build: ./notification-service
+  #   container_name: notification-service
+  #   depends_on:
+  #     - geardotcom_postgres
+  #     - discovery-service
+  #     - gateway-service
+  #   ports:
+  #     - "8084:8084"
+  #   environment:
+  #     - SPRING_PROFILES_ACTIVE=docker
+  #     - EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE=http://discovery-service:8761/eureka
+  #     - SPRING_DATASOURCE_URL=jdbc:postgresql://geardotcom_postgres:5432/geardotcom
+  #     - SPRING_DATASOURCE_USERNAME=postgres
+  #     - SPRING_DATASOURCE_PASSWORD=root
+  #     - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+  #     - NOVU_API_KEY=test_novu_api_key
+  #     - NOVU_BASE_URL=http://localhost:3000
+  #   networks:
+  #     - ecommerce-network
 
 #  pgadmin:
 #    image: dpage/pgadmin4:6.20
@@ -141,6 +221,7 @@ services:
 volumes:
   geardotcom_postgres_data:
   keycloak_postgres_data:
+  redis_data:
 #  pgadmin:
 
 networks:

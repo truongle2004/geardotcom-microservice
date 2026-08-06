@@ -9,6 +9,37 @@ spring:
           issuer-uri: http://localhost:9000/realms/geardotcom
           jwk-set-uri: http://localhost:9000/realms/geardotcom/protocol/openid-connect/certs
 
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+      routes:
+        - id: sale-service
+          uri: lb://sale-service
+          predicates:
+            - Path=/api/v1/sale/**
+        - id: user-service
+          uri: lb://user-service
+          predicates:
+            - Path=/api/v1/user/**
+        - id: payment-service
+          uri: lb://payment-service
+          predicates:
+            - Path=/api/v1/payment/**
+        - id: notification-service
+          uri: lb://notification-service
+          predicates:
+            - Path=/api/v1/notification/**
+        - id: notification-service
+          uri: lb://notification-service
+          predicates:
+            - Path=/api/v1/notification/**
+
+server:
+  port: 8222
+
 eureka:
   client:
     service-url:

@@ -21,7 +21,6 @@ import web_ecommerce.sale_service.dto.CategoryDTO;
 import web_ecommerce.sale_service.dto.ProductDTO;
 import web_ecommerce.sale_service.dto.VendorDTO;
 import web_ecommerce.sale_service.service.ProductService;
-//import web_ecommerce.sale_service.service.VietnameseSearchService;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.nio.file.Files;
@@ -33,8 +32,7 @@ import java.util.List;
 public class ProductController extends BaseController {
     private static final String root = "/sale/products";
     private final ProductService productService;
-//    private final VietnameseSearchService vietnameseSearchService;
-    
+
     @Value("${file_upload-dir}")
     private String imageUploadDir;
 
@@ -58,7 +56,7 @@ public class ProductController extends BaseController {
         return productService.getListProductByCategory(pageable, category, vendor, min, max);
     }
 
-    @Operation(summary = "API search products (Hibernate Search)")
+    @Operation(summary = "API search products")
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Success"),
             @ApiResponse(responseCode = "400", description = "Bad request"),
             @ApiResponse(responseCode = "500", description = "Internal server error")}
@@ -160,52 +158,5 @@ public class ProductController extends BaseController {
     public Response<Page<ProductDTO>> getTopRatedProducts(Pageable pageable) {
         return productService.getTopRatedProducts(pageable);
     }
-
-//    @Operation(summary = "API search products with Vietnamese text support")
-//    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Success"),
-//            @ApiResponse(responseCode = "400", description = "Bad request"),
-//            @ApiResponse(responseCode = "500", description = "Internal server error")}
-//    )
-//    @GetMapping(value = V1 + root + "/search-vietnamese")
-//    public Response<Page<ProductDTO>> searchProductsVietnamese(
-//            Pageable pageable,
-//            @RequestParam(required = false, name = "q") String query,
-//            @RequestParam(defaultValue = "all") String category,
-//            @RequestParam(defaultValue = "") String vendor,
-//            @RequestParam(required = false, name = "min") BigDecimal min,
-//            @RequestParam(required = false, name = "max") BigDecimal max
-//    ) {
-//        return vietnameseSearchService.searchProductsVietnamese(pageable, query, category, vendor, min, max);
-//    }
-
-//    @Operation(summary = "API search products with Vietnamese text normalization")
-//    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Success"),
-//            @ApiResponse(responseCode = "400", description = "Bad request"),
-//            @ApiResponse(responseCode = "500", description = "Internal server error")}
-//    )
-//    @GetMapping(value = V1 + root + "/search-normalized")
-//    public Response<Page<ProductDTO>> searchProductsNormalized(
-//            Pageable pageable,
-//            @RequestParam(required = false, name = "q") String query,
-//            @RequestParam(defaultValue = "all") String category,
-//            @RequestParam(defaultValue = "") String vendor,
-//            @RequestParam(required = false, name = "min") BigDecimal min,
-//            @RequestParam(required = false, name = "max") BigDecimal max
-//    ) {
-//        return vietnameseSearchService.searchProductsNormalized(pageable, query, category, vendor, min, max);
-//    }
-//
-//    @Operation(summary = "API get search suggestions for autocomplete")
-//    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Success"),
-//            @ApiResponse(responseCode = "400", description = "Bad request"),
-//            @ApiResponse(responseCode = "500", description = "Internal server error")}
-//    )
-//    @GetMapping(value = V1 + root + "/search-suggestions")
-//    public Response<List<String>> getSearchSuggestions(
-//            @RequestParam(required = false, name = "q") String query,
-//            @RequestParam(defaultValue = "10") int limit
-//    ) {
-//        return vietnameseSearchService.getSearchSuggestions(query, limit);
-//    }
 }
 

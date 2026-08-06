@@ -78,7 +78,7 @@ public class CartServiceImpl implements CartService {
         cartItem.setProductId(newItem.getProductId());
         cartItem.setQuantity(newItem.getQuantity());
         cartItemRepository.save(cartItem);
-        
+
         return new Response<String>().withDataAndStatus("Đã thêm sản phẩm vào giỏ hàng", HttpStatus.OK);
     }
 
