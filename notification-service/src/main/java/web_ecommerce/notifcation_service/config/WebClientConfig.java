@@ -13,7 +13,7 @@ public class WebClientConfig {
     @Value("${novu.api.base-url}")
     private String baseUrl;
 
-    @Value("${novu.api.key}")
+    @Value("${novu.api.api-key}")
     private String apiKey;
 
     @Bean

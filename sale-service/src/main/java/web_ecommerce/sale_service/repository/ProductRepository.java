@@ -52,6 +52,30 @@ public interface ProductRepository extends JpaRepository<Product, String> {
     @Query("SELECT COALESCE(SUM(p.price), 0) FROM Product p WHERE p.id IN :ids")
     BigDecimal getTotalPrice(List<String> ids);
 
+    @Query("select new web_ecommerce.sale_service.dto.ProductDTO(p.id, p.handle," +
+            "p.title, p.warehouseId, p.productVendorId," +
+            "p.productCategoryId, p.publishedScope, p.purchaseCount," +
+            "p.averageRating, p.reviewCount, p.tags, p.soleQuantity," +
+            "p.notAllowPromotion, p.available, pi.src, pi.alt, p.price) from Product p " +
+            "join ProductImage pi on p.id = pi.productId " +
+            "join ProductCategory pc on p.productCategoryId = pc.id " +
+            "join ProductVendor pv on p.productVendorId = pv.id " +
+            "where pi.position = :position " +
+            "AND (:category = 'all' OR :category = '' OR pc.handle = :category) " +
+            "AND (:vendor = '' OR pv.handle = :vendor) " +
+            "AND (:minPrice IS NULL OR p.price >= :minPrice) " +
+            "AND (:maxPrice IS NULL OR p.price <= :maxPrice) " +
+            "AND (LOWER(p.title) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
+            "OR LOWER(p.description) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
+            "OR LOWER(p.tags) LIKE LOWER(CONCAT('%', :keyword, '%')))")
+    Page<ProductDTO> searchProducts(Pageable pageable,
+                                    @Param("keyword") String keyword,
+                                    @Param("category") String category,
+                                    @Param("vendor") String vendor,
+                                    @Param("minPrice") BigDecimal minPrice,
+                                    @Param("maxPrice") BigDecimal maxPrice,
+                                    @Param("position") int position);
+
 //    @Query("SELECT p.price FROM Product p WHERE p.id IN :ids")
 //    List<Long> getProductPriceByIds(@Param("ids") List<String> ids);
 }

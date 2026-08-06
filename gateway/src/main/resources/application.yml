@@ -20,6 +20,10 @@ spring:
           uri: lb://payment-service
           predicates:
             - Path=/api/v1/payment/**
+        - id: notification-service
+          uri: lb://notification-service
+          predicates:
+            - Path=/api/v1/notification/**
 
 server:
   port: 8222

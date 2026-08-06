@@ -3,24 +3,15 @@ package com.web_ecommerce.gateway.security;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.web_ecommerce.gateway.exception.AccessDeniedExceptionHandler;
 import com.web_ecommerce.gateway.exception.AuthenticationExceptionHandler;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.convert.converter.Converter;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
-import org.springframework.security.oauth2.core.OAuth2TokenValidator;
-import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.security.oauth2.jwt.JwtValidators;
-import org.springframework.security.oauth2.jwt.NimbusReactiveJwtDecoder;
-import org.springframework.security.oauth2.jwt.ReactiveJwtDecoder;
 import org.springframework.security.web.server.SecurityWebFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.reactive.CorsConfigurationSource;
 import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
-import reactor.core.publisher.Mono;
 
 import java.util.Arrays;
 import java.util.List;
@@ -29,14 +20,6 @@ import java.util.List;
 @EnableWebFluxSecurity
 public class SecurityConfig {
     private ObjectMapper objectMapper;
-    private static final String ROLE_USER = "ROLE_USER";
-    private static final String ROLE_ADMIN = "ROLE_ADMIN";
-
-    @Value("${spring.security.oauth2.resourceserver.jwt.jwk-set-uri}")
-    private String jwkSetUri;
-
-    @Value("${spring.security.oauth2.resourceserver.jwt.issuer-uri}")
-    private String issuerUri;
 
     public SecurityConfig(ObjectMapper objectMapper) {
         this.objectMapper = objectMapper;
@@ -53,20 +36,6 @@ public class SecurityConfig {
     }
 
     @Bean
-    public ReactiveJwtDecoder jwtDecoder() {
-        NimbusReactiveJwtDecoder decoder = NimbusReactiveJwtDecoder
-                .withJwkSetUri(jwkSetUri)   // uses internal Docker DNS: identity:9000
-                .build();
-
-        // Validate iss against public URL (what's stamped in the token)
-        OAuth2TokenValidator<Jwt> issuerValidator =
-                JwtValidators.createDefaultWithIssuer(issuerUri);
-
-        decoder.setJwtValidator(issuerValidator);
-        return decoder;
-    }
-
-    @Bean
     public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
         http.authorizeExchange(exchange -> exchange
                         .pathMatchers(HttpMethod.OPTIONS, "/**").permitAll()
@@ -79,69 +48,8 @@ public class SecurityConfig {
                                 "/error",
                                 "/v3/api-docs/**"
                         ).permitAll()
-                        // Public endpoints - no authentication required
-                        .pathMatchers(HttpMethod.GET, "/api/v1/sale/products/**").permitAll()
-                        .pathMatchers(HttpMethod.GET, "/api/v1/sale/products/search").permitAll()
-                        .pathMatchers(HttpMethod.GET, "/api/v1/sale/products/categories").permitAll()
-                        .pathMatchers(HttpMethod.GET, "/api/v1/sale/products/vendors").permitAll()
-                        .pathMatchers(HttpMethod.GET, "/api/v1/sale/products/best-sellers").permitAll()
-                        .pathMatchers(HttpMethod.GET, "/api/v1/sale/products/featured").permitAll()
-                        .pathMatchers(HttpMethod.GET, "/api/v1/sale/products/top-rated").permitAll()
-                        .pathMatchers(HttpMethod.GET, "/api/v1/sale/reviews/product/**").permitAll()
-                        
-                        // User endpoints - require ROLE_USER
-                        // Cart endpoints
-                        .pathMatchers(HttpMethod.POST, "/api/v1/sale/carts/**").hasAuthority(ROLE_USER)
-                        .pathMatchers(HttpMethod.GET, "/api/v1/sale/carts/**").hasAuthority(ROLE_USER)
-                        .pathMatchers(HttpMethod.DELETE, "/api/v1/sale/carts/**").hasAuthority(ROLE_USER)
-                        
-                        // Wishlist endpoints
-                        .pathMatchers(HttpMethod.POST, "/api/v1/sale/wishlist/**").hasAuthority(ROLE_USER)
-                        .pathMatchers(HttpMethod.GET, "/api/v1/sale/wishlist/**").hasAuthority(ROLE_USER)
-                        .pathMatchers(HttpMethod.DELETE, "/api/v1/sale/wishlist/**").hasAuthority(ROLE_USER)
-                        
-                        // Order endpoints
-                        .pathMatchers(HttpMethod.POST, "/api/v1/sale/orders/**").hasAuthority(ROLE_USER)
-                        .pathMatchers(HttpMethod.GET, "/api/v1/sale/orders/**").hasAuthority(ROLE_USER)
-                        .pathMatchers(HttpMethod.PATCH, "/api/v1/sale/orders/**").hasAuthority(ROLE_USER)
-                        
-                        // Review endpoints
-                        .pathMatchers(HttpMethod.POST, "/api/v1/sale/reviews/**").hasAuthority(ROLE_USER)
-                        .pathMatchers(HttpMethod.GET, "/api/v1/sale/reviews/my-reviews").hasAuthority(ROLE_USER)
-                        .pathMatchers(HttpMethod.PUT, "/api/v1/sale/reviews/**").hasAuthority(ROLE_USER)
-                        .pathMatchers(HttpMethod.DELETE, "/api/v1/sale/reviews/**").hasAuthority(ROLE_USER)
-                        
-                        // Coupon validation
-                        .pathMatchers(HttpMethod.POST, "/coupon/v1/validate").hasAuthority(ROLE_USER)
-                        
-                        // User service endpoints
-                        .pathMatchers(HttpMethod.GET, "/api/v1/user/districts").hasAuthority(ROLE_USER)
-                        .pathMatchers(HttpMethod.GET, "/api/v1/user/wards").hasAuthority(ROLE_USER)
-                        .pathMatchers(HttpMethod.GET, "/api/v1/user/provinces").hasAuthority(ROLE_USER)
-                        .pathMatchers(HttpMethod.GET, "/api/v1/user/profile").hasAuthority(ROLE_USER)
-                        .pathMatchers(HttpMethod.PUT, "/api/v1/user/profile").hasAuthority(ROLE_USER)
-                        .pathMatchers(HttpMethod.GET, "/api/v1/user/address").hasAuthority(ROLE_USER)
-                        .pathMatchers(HttpMethod.PUT, "/api/v1/user/address").hasAuthority(ROLE_USER)
-                        
-                        // Payment endpoints
-                        .pathMatchers(HttpMethod.GET, "/api/v1/payment/handle_success").hasAuthority(ROLE_USER)
-                        .pathMatchers(HttpMethod.GET, "/api/v1/payment/vnpay_return/").hasAuthority(ROLE_USER)
-                        
-                        // Admin endpoints - require ROLE_ADMIN
-                        .pathMatchers("/admin/v1/coupons/**").hasAuthority(ROLE_ADMIN)
-                        .pathMatchers("/admin/v1/discounts/**").hasAuthority(ROLE_ADMIN)
-                        .pathMatchers("/admin/v1/categories/**").hasAuthority(ROLE_ADMIN)
-                        .pathMatchers("/admin/v1/vendors/**").hasAuthority(ROLE_ADMIN)
-                        .pathMatchers("/admin/v1/warehouses/**").hasAuthority(ROLE_ADMIN)
-                        .pathMatchers("/admin/v1/reviews/**").hasAuthority(ROLE_ADMIN)
-                        .anyExchange().authenticated()
-                )
-                .oauth2ResourceServer(oauth2 -> oauth2
-                        .authenticationEntryPoint(authenticationExceptionHandler())
-                        .accessDeniedHandler(accessDeniedExceptionHandler())
-                        .jwt(jwt -> jwt
-                                .jwtDecoder(jwtDecoder())
-                                .jwtAuthenticationConverter(jwtAuthenticationConverterForKeycloak())));
+                        .anyExchange().permitAll()
+                );
 
         http.csrf(ServerHttpSecurity.CsrfSpec::disable);
         return http.build();
@@ -159,12 +67,6 @@ public class SecurityConfig {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", corsConfig);
         return source;
-    }
-
-
-    @Bean
-    public Converter<Jwt, Mono<AbstractAuthenticationToken>> jwtAuthenticationConverterForKeycloak() {
-        return new KeycloakReactiveJwtConverter();
     }
 }
 
